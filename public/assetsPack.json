@@ -62,6 +62,12 @@
             },
 
             {
+                "url": "assets/images/rect.png",
+                "type": "image", 
+                "key": "rect"
+            },
+
+            {
                 "url": "assets/sounds/background.mp3",
                 "type": "audio", 
                 "key": "backgroundMusic"
