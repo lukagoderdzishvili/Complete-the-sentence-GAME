@@ -10,7 +10,6 @@ export default class MainScene extends Phaser.Scene{
 
 
     public onScreenChange(): void{
-        console.log('here');
-
+        console.log('resize mainscene');
     }
 }

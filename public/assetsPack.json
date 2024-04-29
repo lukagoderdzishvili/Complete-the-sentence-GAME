@@ -1,0 +1,11 @@
+{
+    "section1": {
+        "files": [
+            {
+                "url": "assets/start.png",
+                "type": "image",
+                "key": "start"
+            }
+        ]
+    }
+}
