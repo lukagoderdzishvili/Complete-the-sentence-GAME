@@ -6,11 +6,67 @@
                 "type": "image",
                 "key": "start"
             },
+            
             {
                 "url": "assets/background.jpg",
                 "type": "image", 
                 "key": "background"
+            },
+
+            {
+                "url": "assets/big-bold-gold-square.webp",
+                "type": "image", 
+                "key": "bigBoldGoldSquare"
+            },
+
+            {
+                "url": "assets/big-gold-square.webp",
+                "type": "image", 
+                "key": "bigGoldSquare"
+            },
+            {
+                "url": "assets/big-silver-square.webp",
+                "type": "image", 
+                "key": "bigSilverSquare"
+            },
+            {
+                "url": "assets/bold-gold-square.webp",
+                "type": "image", 
+                "key": "boldGoldSquare"
+            },
+
+            {
+                "url": "assets/gold-square.webp",
+                "type": "image", 
+                "key": "goldSquare"
+            },
+            {
+                "url": "assets/pink-square.webp",
+                "type": "image", 
+                "key": "pinkSquare"
+            },
+            {
+                "url": "assets/silver-square.webp",
+                "type": "image", 
+                "key": "silverSquare"
+            },
+            {
+                "url": "assets/correct.png",
+                "type": "image", 
+                "key": "correct"
+            },
+            {
+                "url": "assets/incorrect.png",
+                "type": "image", 
+                "key": "incorrect"
+            },
+
+            {
+                "url": "sounds/background.mp3",
+                "type": "audio", 
+                "key": "backgroundMusic"
             }
+
         ]
     }
 }
