@@ -2,67 +2,67 @@
     "section1": {
         "files": [
             {
-                "url": "assets/start.png",
+                "url": "assets/images/start.png",
                 "type": "image",
                 "key": "start"
             },
             
             {
-                "url": "assets/background.jpg",
+                "url": "assets/images/background.jpg",
                 "type": "image", 
                 "key": "background"
             },
 
             {
-                "url": "assets/big-bold-gold-square.webp",
+                "url": "assets/images/big-bold-gold-square.webp",
                 "type": "image", 
                 "key": "bigBoldGoldSquare"
             },
 
             {
-                "url": "assets/big-gold-square.webp",
+                "url": "assets/images/big-gold-square.webp",
                 "type": "image", 
                 "key": "bigGoldSquare"
             },
             {
-                "url": "assets/big-silver-square.webp",
+                "url": "assets/images/big-silver-square.webp",
                 "type": "image", 
                 "key": "bigSilverSquare"
             },
             {
-                "url": "assets/bold-gold-square.webp",
+                "url": "assets/images/bold-gold-square.webp",
                 "type": "image", 
                 "key": "boldGoldSquare"
             },
 
             {
-                "url": "assets/gold-square.webp",
+                "url": "assets/images/gold-square.webp",
                 "type": "image", 
                 "key": "goldSquare"
             },
             {
-                "url": "assets/pink-square.webp",
+                "url": "assets/images/pink-square.webp",
                 "type": "image", 
                 "key": "pinkSquare"
             },
             {
-                "url": "assets/silver-square.webp",
+                "url": "assets/images/silver-square.webp",
                 "type": "image", 
                 "key": "silverSquare"
             },
             {
-                "url": "assets/correct.png",
+                "url": "assets/images/correct.png",
                 "type": "image", 
                 "key": "correct"
             },
             {
-                "url": "assets/incorrect.png",
+                "url": "assets/images/incorrect.png",
                 "type": "image", 
                 "key": "incorrect"
             },
 
             {
-                "url": "sounds/background.mp3",
+                "url": "assets/sounds/background.mp3",
                 "type": "audio", 
                 "key": "backgroundMusic"
             }

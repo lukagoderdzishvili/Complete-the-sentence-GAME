@@ -16,6 +16,9 @@ export default class MainScene extends Phaser.Scene{
         this.cameras.main.fadeIn(1000, 0, 0, 0);
         this._background = this.add
         .image(innerWidth / 2, innerHeight / 2, 'background').setDisplaySize(innerWidth, innerHeight);
+
+
+        this.add.text(innerWidth / 2, innerHeight / 2, 'TEST', {fontFamily: 'rubik-bold', fontSize: '50px'});
     }
 
 
