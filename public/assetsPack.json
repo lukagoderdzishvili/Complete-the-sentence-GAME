@@ -68,6 +68,12 @@
             },
 
             {
+                "url": "assets/images/next.svg",
+                "type": "image", 
+                "key": "next"
+            },
+
+            {
                 "url": "assets/sounds/background.mp3",
                 "type": "audio", 
                 "key": "backgroundMusic"

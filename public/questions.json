@@ -1,28 +1,44 @@
 {
     "list": [
         {
-            "value": "I can't carry this suitcase \n it is ### heavy."
+            "value": "I can't carry this suitcase \n it is ### heavy.",
+            "answers": ["enough", "too"],
+            "correctAnswer": "too"
         },
         {
-            "value": "This bag isn't big ###. I \n cant't put all my clothes in it."
+            "value": "This bag isn't big ###. I \n cant't put all my clothes in it.",
+            "answers": ["enough", "too"],
+            "correctAnswer": "enough"
         },
         {
-            "value": "Is your meal warm ###. if \n not i'll put it in the microwave"
+            "value": "Is your meal warm ###. if \n not i'll put it in the microwave",
+            "answers": ["too", "enough?"],
+            "correctAnswer": "enough?"
         },
         {
-            "value": "Mom was ### \n worried to go to sleep."
+            "value": "Mom was ### \n worried to go to sleep.",
+            "answers": ["enough", "too"],
+            "correctAnswer": "too"
         },
         {
-            "value": "I don't like this fizzy drink. \n it's much ### sweet."
+            "value": "I don't like this fizzy drink. \n it's much ### sweet.",
+            "answers": ["enough", "too"],
+            "correctAnswer": "too"
         },
         {
-            "value": "We couldn't buy tickets. Because \n we didn't have ### money"
+            "value": "We couldn't buy tickets. Because \n we didn't have ### money",
+            "answers": ["enough", "too"],
+            "correctAnswer": "enough"
         },
         {
-            "value": "She is ### young to \n drink alcohol. She is only 16"
+            "value": "She is ### young to \n drink alcohol. She is only 16",
+            "answers": ["too", "enough"],
+            "correctAnswer": "too"
         },
         {
-            "value": "I couldn't see her anywhere because \n it was getting ### foggy."
+            "value": "I couldn't see her anywhere because \n it was getting ### foggy.",
+            "answers": ["enough", "too"],
+            "correctAnswer": "too"
         }
         
     ]
