@@ -22,6 +22,8 @@ export default class MainScene extends Phaser.Scene{
         this._background = this.add.image(innerWidth / 2, innerHeight / 2, 'background').setDisplaySize(innerWidth, innerHeight);
 
         this._audioManager = new AudioManager(this);
+        this._audioManager.backgroundMusic.play();
+        
         this._paginator = new Paginator(this, this._changeQuestion, this._gameData.list.length);
         
         this._gameData.list.forEach((data) => {

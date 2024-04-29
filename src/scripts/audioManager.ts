@@ -1,6 +1,6 @@
 export class AudioManager{
     private _scene: Phaser.Scene;
-    private _backgroundMusic!: Phaser.Sound.BaseSound;
+    public backgroundMusic!: Phaser.Sound.BaseSound;
 
     constructor(scene: Phaser.Scene){
         this._scene = scene;
@@ -13,12 +13,11 @@ export class AudioManager{
         });
 
         this._initSounds();
-        this._backgroundMusic.play();
     }
 
 
     private _initSounds(): void{
-        this._backgroundMusic = this._scene.sound.add('backgroundMusic', {loop: true, volume: 1 });
+        this.backgroundMusic = this._scene.sound.add('backgroundMusic', {loop: true, volume: 1 });
 
 
     }
