@@ -26,7 +26,7 @@ export default class Configs{
         },
     
         physics: {
-            default: 'arcade',            
+            default: 'arcade'
         },
         dom: {
             createContainer: true
