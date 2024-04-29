@@ -5,6 +5,11 @@
                 "url": "assets/start.png",
                 "type": "image",
                 "key": "start"
+            },
+            {
+                "url": "assets/background.jpg",
+                "type": "image", 
+                "key": "background"
             }
         ]
     }

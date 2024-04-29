@@ -16,7 +16,7 @@ export default class Configs{
             height: 1080,
             min: {
                 width: 320,
-                height: 400
+                height: 200
             },
             max: {
                 width: 3840,

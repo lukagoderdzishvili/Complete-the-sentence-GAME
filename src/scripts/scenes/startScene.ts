@@ -9,8 +9,11 @@ export default class StartScene extends Phaser.Scene{
     public create(): void{
         this._startButton = this.add.image(innerWidth / 2, innerHeight / 2, 'start')
         .setInteractive({cursor: 'pointer'})
-        .on('pointerdown', () => {
-            alert('START GAME :)');
+        .on('pointerdown', () => { 
+            this.cameras.main.fadeOut(1000, 0, 0, 0);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                this.scene.start('MainScene');     
+            });
         });
 
 
