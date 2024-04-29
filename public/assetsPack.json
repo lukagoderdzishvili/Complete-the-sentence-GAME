@@ -62,9 +62,15 @@
             },
 
             {
-                "url": "assets/images/rect.png",
+                "url": "assets/images/answer-box.png",
                 "type": "image", 
-                "key": "rect"
+                "key": "answerBox"
+            },
+
+            {
+                "url": "assets/images/answers-container.png",
+                "type": "image", 
+                "key": "answersContainer"
             },
 
             {

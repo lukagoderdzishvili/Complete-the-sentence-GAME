@@ -41,9 +41,15 @@ export default class MainScene extends Phaser.Scene{
 
     public onScreenChange(): void{
         console.log('resize mainscene');
-        this._background.setPosition(innerWidth / 2, innerHeight / 2).setDisplaySize(innerWidth, innerHeight);
 
+        this._background
+        .setPosition(innerWidth / 2, innerHeight / 2)
+        .setDisplaySize(innerWidth, innerHeight);
 
         this._paginator.onScreenChange();
+
+        this._questions.forEach(question => {
+            question.onScreenChange();
+        })
     }
 }
