@@ -30,6 +30,8 @@ export default class MainScene extends Phaser.Scene{
         });
 
         this._changeQuestion();
+
+        this.onScreenChange();
     }
 
     private _changeQuestion = (): void => {
@@ -40,8 +42,6 @@ export default class MainScene extends Phaser.Scene{
     }
 
     public onScreenChange(): void{
-        console.log('resize mainscene');
-
         this._background
         .setPosition(innerWidth / 2, innerHeight / 2)
         .setDisplaySize(innerWidth, innerHeight);

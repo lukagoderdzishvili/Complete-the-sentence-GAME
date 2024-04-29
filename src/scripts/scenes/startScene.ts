@@ -22,6 +22,7 @@ export default class StartScene extends Phaser.Scene{
         .image(0, 0, 'start')
         .setInteractive({cursor: 'pointer'})
         .on('pointerdown', () => {
+            this._startButton.removeInteractive();
             this._startButtonCallBack();
         });
 
@@ -51,8 +52,6 @@ export default class StartScene extends Phaser.Scene{
     }
 
     public onScreenChange(): void{
-        console.log('resize startscene');
-
         this._startButtonContainer
         .setScale(innerWidth / 1920)
         .setPosition(innerWidth / 2, innerHeight / 2);

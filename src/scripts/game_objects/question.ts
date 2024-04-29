@@ -107,9 +107,9 @@ export class Question extends Phaser.GameObjects.Container {
     }
 
     public onScreenChange(): void{
-        this
-        .setPosition(innerWidth / 2, innerHeight / 2)
-        .setScale(innerWidth / 1920     );
+        let scale: number = innerWidth < 1001 ? (innerWidth / 1300) : (innerWidth / 1920);
+        this.setPosition(innerWidth / 2, innerHeight / 2)
+        .setScale(scale);
         
     }
 }
