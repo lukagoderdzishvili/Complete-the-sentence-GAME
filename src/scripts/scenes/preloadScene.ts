@@ -12,6 +12,8 @@ export default class PreloadScene extends Phaser.Scene {
         this._loadFont("teko-semibold", "assets/fonts/teko-semibold.woff2");
         this._loadFont("rubik", "assets/fonts/hebrew/rubik-bold.woff2");
 
+        this.load.html('finishDialog', 'partials/finishDialog.html');
+
         this.load.on('complete', this.complete, this);
     }
 

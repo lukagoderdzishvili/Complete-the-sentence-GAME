@@ -4,10 +4,12 @@ import { Paginator } from "../game_objects/paginator";
 import * as Entities from '../statics/entities';
 import { toggleFullScreen } from "../helpers";
 import { Timer } from "../game_objects/timer";
+import { FinishDialog } from "../partials/finishDialog";
 
 export default class MainScene extends Phaser.Scene{
     private _audioManager!: AudioManager;
     private _timer!: Timer;
+    private _finishDialog!: FinishDialog;
     private _background!: Phaser.GameObjects.Image;
     private _paginator!: Paginator;
     private _submitButton!: Phaser.GameObjects.Image;
@@ -36,7 +38,7 @@ export default class MainScene extends Phaser.Scene{
         this._audioManager.backgroundMusic.play();
         
         this._paginator = new Paginator(this, this._changeQuestion, this._gameData.list.length);
-     
+        
         
         
         this._createQuestions();
@@ -107,7 +109,7 @@ export default class MainScene extends Phaser.Scene{
 
     private _finishGame(): void{
         this._timer.pause();
-        alert('GAME FINISHED: SCORE = ' + this._correctAnswersCountText.text +  '     TIME:   ' + this._timer.value);
+        this._finishDialog = new FinishDialog(this, this._correctAnswersCountText.text, this._timer.value, this._resetGame);
     }
 
     private _increaseCorrectAnswerText(): void{
@@ -137,12 +139,12 @@ export default class MainScene extends Phaser.Scene{
         }
     }
 
-    private _resetGame(): void{
+    private _resetGame = (): void => {
         this._correctAnswersCountText.setText('0');
         this._questions.forEach(question => {question.destroy()});
         this._questions.length = 0;
         this._questions = [];
-        
+        this._finishDialog.destroy();
         this._timer.reset();
         this._createQuestions();
         this._paginator.reset();
