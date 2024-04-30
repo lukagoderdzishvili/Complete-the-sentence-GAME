@@ -80,6 +80,12 @@
             },
 
             {
+                "url": "assets/images/checkmark.png",
+                "type": "image", 
+                "key": "checkmark"
+            },
+
+            {
                 "url": "assets/images/submit-answer.png",
                 "type": "image", 
                 "key": "submitButton"

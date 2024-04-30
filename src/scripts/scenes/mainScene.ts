@@ -12,6 +12,8 @@ export default class MainScene extends Phaser.Scene{
 
     private _gameData: Entities.GameData = data;
     private _questions: Question[] = [];
+    private _checkMarkIcon!: Phaser.GameObjects.Image;
+    private _correctAnswersCountText!: Phaser.GameObjects.Text;
 
     constructor(){
         super({ key: 'MainScene' });
@@ -35,6 +37,8 @@ export default class MainScene extends Phaser.Scene{
 
         this._changeQuestion();
         this._createSubmitButton();
+        this._createCorrectAnswers();
+
         this.onScreenChange();
     }
 
@@ -46,6 +50,14 @@ export default class MainScene extends Phaser.Scene{
         .on('pointerdown', () => {
             alert('submit');
         });
+    }
+
+    private _createCorrectAnswers(): void{
+        this._correctAnswersCountText = this.add.text(innerWidth - 20, 30, '0', {fontFamily: 'rubik', fontSize: 35, color: '#05fa32'});
+        this._correctAnswersCountText.x -= this._correctAnswersCountText.displayWidth / 2;
+        this._correctAnswersCountText.y -= this._correctAnswersCountText.displayHeight / 2;
+
+        this._checkMarkIcon = this.add.image(this._correctAnswersCountText.x - 20, 30, 'checkmark').setDisplaySize(25, 28);
     }
 
     private _changeQuestion = (): void => {
@@ -60,6 +72,13 @@ export default class MainScene extends Phaser.Scene{
         this._background
         .setPosition(innerWidth / 2, innerHeight / 2)
         .setDisplaySize(innerWidth, innerHeight);
+
+        this._correctAnswersCountText.setPosition(innerWidth - 20, 30);
+        this._correctAnswersCountText.x -= this._correctAnswersCountText.displayWidth / 2;
+        this._correctAnswersCountText.y -= this._correctAnswersCountText.displayHeight / 2;
+
+        this._checkMarkIcon.setPosition(this._correctAnswersCountText.x - 20, 30)
+
 
         this._paginator.onScreenChange();
         this._submitButton.setPosition(innerWidth / 2, innerHeight - 40).setScale(Math.max(0.5, scale));
