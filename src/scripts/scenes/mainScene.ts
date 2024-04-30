@@ -35,11 +35,8 @@ export default class MainScene extends Phaser.Scene{
         this._paginator = new Paginator(this, this._changeQuestion, this._gameData.list.length);
      
         
-        this._gameData.list.forEach((data) => {
-            const question = new Question(this, data).setVisible(false);
-            this._questions.push(question);
-        });
         
+        this._createQuestions();
         this._createSubmitButton();
         this._createCorrectAnswers();
         this._changeQuestion();
@@ -47,6 +44,13 @@ export default class MainScene extends Phaser.Scene{
         this._createPlayAgainButton();
 
         this.onScreenChange();
+    }
+
+    private _createQuestions(): void{
+        this._gameData.list.forEach((data) => {
+            const question = new Question(this, data).setVisible(false);
+            this._questions.push(question);
+        });
     }
 
     private _createSubmitButton(): void{
@@ -75,7 +79,7 @@ export default class MainScene extends Phaser.Scene{
         .setDisplaySize(50, 50)
         .setInteractive({cursor: 'pointer'})
         .on('pointerdown', () => {
-           // this.scene.start('StartScene');
+            this._resetGame();
         });
     }
 
@@ -127,6 +131,18 @@ export default class MainScene extends Phaser.Scene{
         }else{
             this._submitButton.setInteractive({cursor: 'pointer'}).setAlpha(1);
         }
+    }
+
+    private _resetGame(): void{
+        this._correctAnswersCountText.setText('0');
+        this._questions.forEach(question => {question.destroy()});
+        this._questions.length = 0;
+        this._questions = [];
+
+        this._createQuestions();
+        this._paginator.reset();
+        this._changeQuestion();
+
     }
 
     public onScreenChange(): void{

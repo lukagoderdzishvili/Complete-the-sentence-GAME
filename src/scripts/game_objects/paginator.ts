@@ -91,6 +91,11 @@ export class Paginator extends Phaser.GameObjects.Container{
         return this._countPage === this._currentPage;
     }
 
+    public reset(): void{
+        this._currentPage = 1;
+        this._checkState();
+    }
+
 
     public onScreenChange(): void{
         this.setPosition(innerWidth / 2, 30);
