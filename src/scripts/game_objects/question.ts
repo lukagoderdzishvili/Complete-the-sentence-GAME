@@ -45,7 +45,7 @@ export class Question extends Phaser.GameObjects.Container {
                 .text(this._textBeforeRect.displayWidth + (this._rectSize.width / 10) * 2 + this._rectSize.width, index * this._strOffsetY, textAfter, this._questionTextStyle)
                 .setResolution(2);
                 
-                this._rect = this._scene.add.image(this._textBeforeRect.displayWidth + (this._rectSize.width / 10) + (this._rectSize.width / 2), index * this._strOffsetY + this._rectSize.height / 2, 'answerBox').setDisplaySize(this._rectSize.width, this._rectSize.height);
+                this._rect = this._scene.physics.add.image(this._textBeforeRect.displayWidth + (this._rectSize.width / 10) + (this._rectSize.width / 2), index * this._strOffsetY + this._rectSize.height / 2, 'answerBox').setDisplaySize(this._rectSize.width, this._rectSize.height);
 
                 this._strSizeWithRect += this._textAfterRect.displayWidth;
                 this._strSizeWithRect += this._textBeforeRect.displayWidth;
@@ -71,39 +71,57 @@ export class Question extends Phaser.GameObjects.Container {
     }
 
     private _drawAnswerContainer(): void{
-        this._answersContainer = this._scene.add.container(0, -200);
+        this._answersContainer = this._scene.add.container(0, -200);// Create the container for answers
         this.add(this._answersContainer);
 
-        const containerBackgroundSize = {
-            width: 800,
-            height: 150
-        };
-
-        const answersContainerBackground = this._scene.add
-        .image(0, 0, 'answersContainer')
-        .setDisplaySize(containerBackgroundSize.width, containerBackgroundSize.height)
-        .setAlpha(0.5);
-
+        // Set up the background image for the container
+        const containerBackgroundSize = { width: 800, height: 150 };
+        const answersContainerBackground = this._createContainerBackground(containerBackgroundSize);
         this._answersContainer.add(answersContainerBackground);
 
-
+        // Calculate initial positions for answers
         const padding: number = 50;
-        const zeroPointX: number = (-answersContainerBackground.width / 2) + this._rectSize.width / 2;
-        const zeroPointY: number = padding - this._rect.height / 2;
+        const initialAnswerX = this._calculateInitialAnswerX(answersContainerBackground.width);
+        const initialAnswerY = this._calculateInitialAnswerY(padding);
 
+         // Create and add answer items to the container
         this._config.answers.forEach((answer, index) => {
-
-            const item = new Answer(this._scene, {
-                position: {
-                    x: zeroPointX + (index * (this._rectSize.width + padding)) + padding * index,
-                    y: zeroPointY
-                },
-                size: this._rectSize,
-                value: answer
-            });
-
+            const item = this._createAnswerItem(answer, initialAnswerX, initialAnswerY, index, padding);
             this._answersContainer.add(item);
-        })
+        });
+    }
+
+    // Create the background image for the answers container
+    private _createContainerBackground(size: { width: number, height: number }): Phaser.GameObjects.Image {
+        return this._scene.add.image(0, 0, 'answersContainer')
+            .setDisplaySize(size.width, size.height)
+            .setAlpha(0.5);
+    }
+
+    // Calculate the initial X position for the answers
+    private _calculateInitialAnswerX(containerWidth: number): number {
+        const rectWidth = this._rectSize.width;
+        const zeroPointX = (-containerWidth / 2) + rectWidth / 2;
+        return zeroPointX;
+    }
+
+    // Calculate the initial Y position for the answers
+    private _calculateInitialAnswerY(padding: number): number {
+        return padding - this._rect.height / 2;
+    }
+
+
+    // Create an answer item and return it
+    private _createAnswerItem(answer: string, initialX: number, initialY: number, index: number, padding: number): Answer {
+        const item = new Answer(this._scene, {
+            position: {
+                x: initialX + (index * (this._rectSize.width + padding)) + padding * index,
+                y: initialY
+            },
+            size: this._rectSize,
+            value: answer
+        }, this._rect);
+        return item;
     }
 
     public onScreenChange(): void{
