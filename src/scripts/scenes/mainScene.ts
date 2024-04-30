@@ -62,7 +62,7 @@ export default class MainScene extends Phaser.Scene{
     public _createFullScreenButton(): void{
         this._fullScreenButton = this.add
         .image(innerWidth - 30, innerHeight - 30, 'fullscreen')
-        .setDisplaySize(40, 40)
+        .setDisplaySize(44, 44)
         .setInteractive({cursor: 'pointer'})
         .on('pointerdown', () => {
             toggleFullScreen();
