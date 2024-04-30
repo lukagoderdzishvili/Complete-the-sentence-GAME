@@ -99,7 +99,7 @@ export class Question extends Phaser.GameObjects.Container {
                     y: zeroPointY
                 },
                 size: this._rectSize,
-                text: answer
+                value: answer
             });
 
             this._answersContainer.add(item);
