@@ -156,11 +156,11 @@ export default class MainScene extends Phaser.Scene{
         .setPosition(innerWidth / 2, innerHeight / 2)
         .setDisplaySize(innerWidth, innerHeight);
 
-        this._correctAnswersCountText.setPosition(innerWidth - 20, 30);
+        this._correctAnswersCountText.setPosition(innerWidth - 40, 40);
         this._correctAnswersCountText.x -= this._correctAnswersCountText.displayWidth / 2;
         this._correctAnswersCountText.y -= this._correctAnswersCountText.displayHeight / 2;
 
-        this._checkMarkIcon.setPosition(this._correctAnswersCountText.x - 20, 30)
+        this._checkMarkIcon.setPosition(this._correctAnswersCountText.x - 20, 40)
 
 
         this._fullScreenButton.setPosition(innerWidth - 30, innerHeight - 30);
