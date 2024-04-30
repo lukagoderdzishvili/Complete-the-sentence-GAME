@@ -3,7 +3,6 @@ import { Question } from "../game_objects/question";
 import { Paginator } from "../game_objects/paginator";
 import * as Entities from '../statics/entities';
 import { toggleFullScreen } from "../helpers";
-import data from '../../../public/questions.json' assert { type: 'json' };
 
 export default class MainScene extends Phaser.Scene{
     private _audioManager!: AudioManager;
@@ -11,21 +10,24 @@ export default class MainScene extends Phaser.Scene{
     private _paginator!: Paginator;
     private _submitButton!: Phaser.GameObjects.Image;
 
-    private _gameData: Entities.GameData = data;
+    private _gameData: Entities.GameData;
     private _questions: Question[] = [];
     private _checkMarkIcon!: Phaser.GameObjects.Image;
     private _correctAnswersCountText!: Phaser.GameObjects.Text;
 
     private _fullScreenButton!: Phaser.GameObjects.Image;
+    private _playAgainButton!: Phaser.GameObjects.Image;
 
-    constructor(){
+    constructor(gameData: Entities.GameData){
         super({ key: 'MainScene' });
-    }
+        this._gameData = gameData;
+    }   
 
 
     public create(): void{
         this.cameras.main.fadeIn(1000, 0, 0, 0);
         this._background = this.add.image(innerWidth / 2, innerHeight / 2, 'background').setDisplaySize(innerWidth, innerHeight);
+
 
         this._audioManager = new AudioManager(this);
         this._audioManager.backgroundMusic.play();
@@ -42,7 +44,7 @@ export default class MainScene extends Phaser.Scene{
         this._createCorrectAnswers();
         this._changeQuestion();
         this._createFullScreenButton();
-
+        this._createPlayAgainButton();
 
         this.onScreenChange();
     }
@@ -64,6 +66,16 @@ export default class MainScene extends Phaser.Scene{
         .setInteractive({cursor: 'pointer'})
         .on('pointerdown', () => {
             toggleFullScreen();
+        });
+    }
+
+    private _createPlayAgainButton(): void{
+        this._playAgainButton = this.add
+        .image(30, innerHeight - 30, 'playagain')
+        .setDisplaySize(50, 50)
+        .setInteractive({cursor: 'pointer'})
+        .on('pointerdown', () => {
+           // this.scene.start('StartScene');
         });
     }
 
@@ -131,7 +143,7 @@ export default class MainScene extends Phaser.Scene{
 
 
         this._fullScreenButton.setPosition(innerWidth - 30, innerHeight - 30);
-
+        this._playAgainButton.setPosition(30, innerHeight - 30);
         this._paginator.onScreenChange();
         this._submitButton.setPosition(innerWidth / 2, innerHeight - 40).setScale(Math.max(0.5, scale));
 

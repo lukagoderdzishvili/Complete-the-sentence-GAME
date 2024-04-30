@@ -73,6 +73,12 @@
                 "key": "fullscreen"
             },
 
+            {
+                "url": "assets/images/playagain.png",
+                "type": "image", 
+                "key": "playagain"
+            },
+
 
             {
                 "url": "assets/images/answers-container.png",

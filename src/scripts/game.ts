@@ -3,6 +3,7 @@ import MainScene from "./scenes/mainScene";
 import PreloadScene from "./scenes/preloadScene";
 import Configs from "./statics/configs";
 import StartScene from "./scenes/startScene";
+import data from '../../public/questions.json' assert { type: 'json' };
 
 export default class Game {
     private _config: Phaser.Types.Core.GameConfig;
@@ -16,7 +17,7 @@ export default class Game {
 
         this._preloadScene = new PreloadScene();
         this._startScene = new StartScene();
-        this._mainScene = new MainScene();
+        this._mainScene = new MainScene(data);
     
 
         this._config.scene = [this._preloadScene, this._startScene, this._mainScene];
