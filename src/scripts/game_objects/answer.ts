@@ -119,7 +119,15 @@ export class Answer extends Phaser.GameObjects.Container{
 
     }
 
+    public lockInteractions(): void{
+        this._background.removeInteractive();
+    }
+
     public get initialPointPoisition(): {x: number, y: number}{
         return this._config.position;
+    }
+
+    public get valueText(): string{
+        return this._config.value;
     }
 }

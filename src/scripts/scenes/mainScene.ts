@@ -34,10 +34,10 @@ export default class MainScene extends Phaser.Scene{
             const question = new Question(this, data).setVisible(false);
             this._questions.push(question);
         });
-
-        this._changeQuestion();
+        
         this._createSubmitButton();
         this._createCorrectAnswers();
+        this._changeQuestion();
 
         this.onScreenChange();
     }
@@ -48,8 +48,35 @@ export default class MainScene extends Phaser.Scene{
         .setDisplaySize(250, 60)
         .setInteractive({cursor: 'pointer'})
         .on('pointerdown', () => {
-            alert('submit');
+            this._submitAnswer();
         });
+    }
+
+    private async _submitAnswer(): Promise<void>{
+        if(this._questions[this._paginator.currentPage - 1].isSubmitted) return;
+        let isCorrect: boolean =  await this._questions[this._paginator.currentPage - 1].checkAndSubmit();
+        if(isCorrect) this._increaseCorrectAnswerText();
+
+        let unSubbmitedQuestionIndex: number = this._questions.findIndex((question, index) => !question.isSubmitted && index > this._paginator.currentPage - 1);
+        if(unSubbmitedQuestionIndex === -1){
+            unSubbmitedQuestionIndex = this._questions.findIndex((question) => !question.isSubmitted);
+            if(unSubbmitedQuestionIndex !== -1){
+                this._paginator.openPage(unSubbmitedQuestionIndex);
+            }else{
+                this._finishGame();
+            }
+
+        }else{
+            this._paginator.openPage(unSubbmitedQuestionIndex);
+        }
+    }
+
+    private _finishGame(): void{
+        alert('GAME FINISHED: SCORE = ' + this._correctAnswersCountText.text)
+    }
+
+    private _increaseCorrectAnswerText(): void{
+        this._correctAnswersCountText.setText(`${+this._correctAnswersCountText.text + 1}`);
     }
 
     private _createCorrectAnswers(): void{
@@ -61,10 +88,18 @@ export default class MainScene extends Phaser.Scene{
     }
 
     private _changeQuestion = (): void => {
-        
         this._questions.forEach(question => {question.setVisible(false)});
-
         this._questions[this._paginator.currentPage - 1].setVisible(true);
+        this._checkSubmitButton();
+    }
+
+    private _checkSubmitButton(): void{
+        
+        if(this._questions[this._paginator.currentPage - 1]?.isSubmitted){
+            this._submitButton.removeInteractive().setAlpha(0.5);
+        }else{
+            this._submitButton.setInteractive({cursor: 'pointer'}).setAlpha(1);
+        }
     }
 
     public onScreenChange(): void{

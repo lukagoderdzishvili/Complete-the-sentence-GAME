@@ -37,17 +37,9 @@ export class Paginator extends Phaser.GameObjects.Container{
     }
 
     private _addEvents(): void{
-        this._nextButton.on('pointerdown', () => {
-            this._currentPage++;
-            this._checkState();
-            this._changeCallBack();
-        });
+        this._nextButton.on('pointerdown', () => { this.nextPage()});
 
-        this._previousButton.on('pointerdown', () => {
-            this._currentPage--;
-            this._checkState();
-            this._changeCallBack();
-        });
+        this._previousButton.on('pointerdown', () => { this.previusPage()});
     }
 
     private _checkState(): void{
@@ -73,9 +65,30 @@ export class Paginator extends Phaser.GameObjects.Container{
         }
     }
 
+    public nextPage(): void{
+        this._currentPage++;
+        this._checkState();
+        this._changeCallBack();
+    }
+
+    public previusPage(): void{
+        this._currentPage--;
+        this._checkState();
+        this._changeCallBack();
+    }
+
+    public openPage(index: number): void{
+        this._currentPage = index + 1;
+        this._checkState();
+        this._changeCallBack();
+    }
 
     public get currentPage(): number{
         return this._currentPage;
+    }
+    
+    public get isLastPage(): boolean {
+        return this._countPage === this._currentPage;
     }
 
 

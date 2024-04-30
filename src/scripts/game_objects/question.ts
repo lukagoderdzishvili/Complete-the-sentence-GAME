@@ -16,6 +16,8 @@ export class Question extends Phaser.GameObjects.Container {
     private _questionTextStyle: Phaser.Types.GameObjects.Text.TextStyle = { fontFamily: 'rubik', fontSize: 80, align: 'center' };
     private _strOffsetY: number = 150;
 
+    public isSubmitted: boolean = false;
+
     constructor(scene: Phaser.Scene, config: QuestionConfig) {
         super(scene, innerWidth / 2, innerHeight / 2);
         scene.add.existing(this);
@@ -122,6 +124,51 @@ export class Question extends Phaser.GameObjects.Container {
             value: answer
         }, this._rect);
         return item;
+    }
+
+    private _lock(): void{
+        this._answersContainer.list.forEach(item => {
+            if(item instanceof Answer)item.lockInteractions();
+        });
+        this.isSubmitted = true;
+    }
+
+    public checkAndSubmit(): Promise<boolean>{
+       return new Promise((resolve, _reject) => {
+        const answer: Answer | undefined = this._rect.getData('answer');
+        this._lock();
+        if(answer == undefined) {
+            
+            return resolve(false);
+        };
+        
+        const isCorrect: boolean = answer.valueText === this._config.correctAnswer;
+        let statusImage: Phaser.GameObjects.Image = this._scene.add
+        .image(this._rect.x + this._rectSize.width / 2 - 30, this._rect.y, isCorrect ? 'correct' : 'incorrect')
+        .setDisplaySize(60, 60);
+
+        this._rect.parentContainer.add(statusImage);
+        this._scene.tweens.add({
+            targets: statusImage,
+            displayWidth: 30,
+            displayHeight: 30,
+            yoyo: true,
+            duration: 500,
+            onComplete: () => {
+                this._scene.tweens.add({
+                    targets: statusImage,
+                    displayWidth: 30,
+                    displayHeight: 30,
+                    duration: 500,
+                    completeDelay: 1000,
+                    onComplete: () => {
+                        return resolve(isCorrect);
+                    }
+                });
+            }
+        });
+       })
+        
     }
 
     public onScreenChange(): void{
