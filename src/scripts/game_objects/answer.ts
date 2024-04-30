@@ -8,6 +8,7 @@ export class Answer extends Phaser.GameObjects.Container{
 
     private _dragStartPosition!: Phaser.Math.Vector2;
     private _answerRect: Phaser.GameObjects.Image;
+    
 
 
     constructor(scene: Phaser.Scene, config: Entities.AnswerConfig, answerRect: Phaser.GameObjects.Image){
@@ -42,6 +43,22 @@ export class Answer extends Phaser.GameObjects.Container{
 
 
     private _addEvent(): void{
+        this._background
+        .on('pointerover', () => {
+            this._scene.tweens.add({
+                targets: this,
+                scale: 1.05,
+                duration: 100,
+            });
+        }).on('pointerout', () => {
+            this._scene.tweens.add({
+                targets: this,
+                scale: 1,
+                duration: 100,
+            });
+        });
+
+
         // Enable drag interaction for the background image
         this._background.setInteractive({ cursor: 'pointer', draggable: true });
 

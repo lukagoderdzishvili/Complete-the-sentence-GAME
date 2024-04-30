@@ -80,6 +80,12 @@
             },
 
             {
+                "url": "assets/images/submit-answer.png",
+                "type": "image", 
+                "key": "submitButton"
+            },
+
+            {
                 "url": "assets/sounds/background.mp3",
                 "type": "audio", 
                 "key": "backgroundMusic"

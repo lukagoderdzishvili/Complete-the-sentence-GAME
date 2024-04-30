@@ -8,6 +8,7 @@ export default class MainScene extends Phaser.Scene{
     private _audioManager!: AudioManager;
     private _background!: Phaser.GameObjects.Image;
     private _paginator!: Paginator;
+    private _submitButton!: Phaser.GameObjects.Image;
 
     private _gameData: Entities.GameData = data;
     private _questions: Question[] = [];
@@ -25,6 +26,7 @@ export default class MainScene extends Phaser.Scene{
         this._audioManager.backgroundMusic.play();
         
         this._paginator = new Paginator(this, this._changeQuestion, this._gameData.list.length);
+     
         
         this._gameData.list.forEach((data) => {
             const question = new Question(this, data).setVisible(false);
@@ -32,8 +34,18 @@ export default class MainScene extends Phaser.Scene{
         });
 
         this._changeQuestion();
-
+        this._createSubmitButton();
         this.onScreenChange();
+    }
+
+    private _createSubmitButton(): void{
+        this._submitButton = this.add
+        .image(innerWidth / 2, innerHeight - 40, 'submitButton')
+        .setDisplaySize(250, 60)
+        .setInteractive({cursor: 'pointer'})
+        .on('pointerdown', () => {
+            alert('submit');
+        });
     }
 
     private _changeQuestion = (): void => {
@@ -44,11 +56,13 @@ export default class MainScene extends Phaser.Scene{
     }
 
     public onScreenChange(): void{
+        let scale: number = innerWidth < 1001 ? (innerWidth / 1300) : (innerWidth / 1920);
         this._background
         .setPosition(innerWidth / 2, innerHeight / 2)
         .setDisplaySize(innerWidth, innerHeight);
 
         this._paginator.onScreenChange();
+        this._submitButton.setPosition(innerWidth / 2, innerHeight - 40).setScale(Math.max(0.5, scale));
 
         this._questions.forEach(question => {
             question.onScreenChange();
