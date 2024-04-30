@@ -137,12 +137,13 @@ export default class MainScene extends Phaser.Scene{
         this._questions.forEach(question => {question.destroy()});
         this._questions.length = 0;
         this._questions = [];
-        this._finishDialog.destroy();
+        this._finishDialog?.destroy();
         this._timer.reset();
         this._createQuestions();
         this._paginator.reset();
         this._changeQuestion();
 
+        this.onScreenChange();
     }
 
     public onScreenChange(): void{
