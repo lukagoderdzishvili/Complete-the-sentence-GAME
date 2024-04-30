@@ -5,19 +5,19 @@ import * as Entities from '../statics/entities';
 import { toggleFullScreen } from "../helpers";
 import { Timer } from "../game_objects/timer";
 import { FinishDialog } from "../partials/finishDialog";
+import { CorrectAnswerCounter } from "../game_objects/correctAnswerCounter";
 
 export default class MainScene extends Phaser.Scene{
     private _audioManager!: AudioManager;
     private _timer!: Timer;
     private _finishDialog!: FinishDialog;
+    private _correctAnswerCounter!: CorrectAnswerCounter;
     private _background!: Phaser.GameObjects.Image;
     private _paginator!: Paginator;
     private _submitButton!: Phaser.GameObjects.Image;
 
     private _gameData: Entities.GameData;
     private _questions: Question[] = [];
-    private _checkMarkIcon!: Phaser.GameObjects.Image;
-    private _correctAnswersCountText!: Phaser.GameObjects.Text;
 
     private _fullScreenButton!: Phaser.GameObjects.Image;
     private _playAgainButton!: Phaser.GameObjects.Image;
@@ -38,12 +38,12 @@ export default class MainScene extends Phaser.Scene{
         this._audioManager.backgroundMusic.play();
         
         this._paginator = new Paginator(this, this._changeQuestion, this._gameData.list.length);
-        
+        this._correctAnswerCounter = new CorrectAnswerCounter(this);
         
         
         this._createQuestions();
         this._createSubmitButton();
-        this._createCorrectAnswers();
+       
         this._changeQuestion();
         this._createFullScreenButton();
         this._createPlayAgainButton();
@@ -109,21 +109,14 @@ export default class MainScene extends Phaser.Scene{
 
     private _finishGame(): void{
         this._timer.pause();
-        this._finishDialog = new FinishDialog(this, this._correctAnswersCountText.text, this._timer.value, this._resetGame);
+        this._finishDialog = new FinishDialog(this, this._correctAnswerCounter.text, this._timer.value, this._resetGame);
     }
 
     private _increaseCorrectAnswerText(): void{
-        this._correctAnswersCountText.setText(`${+this._correctAnswersCountText.text + 1}`);
+        this._correctAnswerCounter.increase();
     }
 
-    private _createCorrectAnswers(): void{
-        this._correctAnswersCountText = this.add.text(innerWidth - 20, 30, '0', {fontFamily: 'rubik', fontSize: 35, color: '#05fa32'});
-        this._correctAnswersCountText.x -= this._correctAnswersCountText.displayWidth / 2;
-        this._correctAnswersCountText.y -= this._correctAnswersCountText.displayHeight / 2;
-
-        this._checkMarkIcon = this.add.image(this._correctAnswersCountText.x - 20, 30, 'checkmark').setDisplaySize(25, 28);
-    }
-
+ 
     private _changeQuestion = (): void => {
         this._questions.forEach(question => {question.setVisible(false)});
         this._questions[this._paginator.currentPage - 1].setVisible(true);
@@ -140,7 +133,7 @@ export default class MainScene extends Phaser.Scene{
     }
 
     private _resetGame = (): void => {
-        this._correctAnswersCountText.setText('0');
+        this._correctAnswerCounter.reset();
         this._questions.forEach(question => {question.destroy()});
         this._questions.length = 0;
         this._questions = [];
@@ -153,17 +146,14 @@ export default class MainScene extends Phaser.Scene{
     }
 
     public onScreenChange(): void{
-        let scale: number = innerWidth < 1001 ? (innerWidth / 1300) : (innerWidth / 1920);
+        let scale: number = innerWidth < 1001 ? Math.min((innerWidth / 1300), innerHeight / 800) : Math.min(innerWidth / 1920, innerHeight / 1080);
         this._background
         .setPosition(innerWidth / 2, innerHeight / 2)
         .setDisplaySize(innerWidth, innerHeight);
 
-        this._correctAnswersCountText.setPosition(innerWidth - 40, 40);
-        this._correctAnswersCountText.x -= this._correctAnswersCountText.displayWidth / 2;
-        this._correctAnswersCountText.y -= this._correctAnswersCountText.displayHeight / 2;
+        this._timer.setScale(scale * 1.2);
 
-        this._checkMarkIcon.setPosition(this._correctAnswersCountText.x - 20, 40)
-
+        this._correctAnswerCounter.onScreenChange(scale);
 
         this._fullScreenButton.setPosition(innerWidth - 30, innerHeight - 30);
         this._playAgainButton.setPosition(30, innerHeight - 30);
