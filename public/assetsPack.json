@@ -68,6 +68,13 @@
             },
 
             {
+                "url": "assets/images/fullscreen.svg",
+                "type": "image", 
+                "key": "fullscreen"
+            },
+
+
+            {
                 "url": "assets/images/answers-container.png",
                 "type": "image", 
                 "key": "answersContainer"

@@ -2,6 +2,7 @@ import { AudioManager } from "../audioManager";
 import { Question } from "../game_objects/question";
 import { Paginator } from "../game_objects/paginator";
 import * as Entities from '../statics/entities';
+import { toggleFullScreen } from "../helpers";
 import data from '../../../public/questions.json' assert { type: 'json' };
 
 export default class MainScene extends Phaser.Scene{
@@ -14,6 +15,8 @@ export default class MainScene extends Phaser.Scene{
     private _questions: Question[] = [];
     private _checkMarkIcon!: Phaser.GameObjects.Image;
     private _correctAnswersCountText!: Phaser.GameObjects.Text;
+
+    private _fullScreenButton!: Phaser.GameObjects.Image;
 
     constructor(){
         super({ key: 'MainScene' });
@@ -38,6 +41,8 @@ export default class MainScene extends Phaser.Scene{
         this._createSubmitButton();
         this._createCorrectAnswers();
         this._changeQuestion();
+        this._createFullScreenButton();
+
 
         this.onScreenChange();
     }
@@ -49,6 +54,16 @@ export default class MainScene extends Phaser.Scene{
         .setInteractive({cursor: 'pointer'})
         .on('pointerdown', () => {
             this._submitAnswer();
+        });
+    }
+
+    public _createFullScreenButton(): void{
+        this._fullScreenButton = this.add
+        .image(innerWidth - 30, innerHeight - 30, 'fullscreen')
+        .setDisplaySize(40, 40)
+        .setInteractive({cursor: 'pointer'})
+        .on('pointerdown', () => {
+            toggleFullScreen();
         });
     }
 
@@ -114,6 +129,8 @@ export default class MainScene extends Phaser.Scene{
 
         this._checkMarkIcon.setPosition(this._correctAnswersCountText.x - 20, 30)
 
+
+        this._fullScreenButton.setPosition(innerWidth - 30, innerHeight - 30);
 
         this._paginator.onScreenChange();
         this._submitButton.setPosition(innerWidth / 2, innerHeight - 40).setScale(Math.max(0.5, scale));
