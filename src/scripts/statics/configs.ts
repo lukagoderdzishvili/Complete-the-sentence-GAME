@@ -46,6 +46,6 @@ export default class Configs{
 
 
     static onScreenChange(): void{
-        Configs.scale = innerWidth < 1001 ? Math.min((innerWidth / 1300), innerHeight / 800) : Math.min(innerWidth / 1500, innerHeight / 700);
+        Configs.scale = innerWidth < 1001 ? Math.min((innerWidth / 1300), innerHeight / 800) : Math.min(innerWidth / 1920, innerHeight / 1080);
     }
 }

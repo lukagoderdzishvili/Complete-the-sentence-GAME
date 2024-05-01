@@ -9,35 +9,83 @@ export class Question extends Phaser.GameObjects.Container {
     private _questionContainer!: Phaser.GameObjects.Container;
 
     private _answersContainerBackground!: Phaser.GameObjects.Image;
-    private _textWithouthRect!: Phaser.GameObjects.Text;
-    private _textBeforeRect!: Phaser.GameObjects.Text;
-    private _textAfterRect!: Phaser.GameObjects.Text;
 
     private _rect!: Phaser.GameObjects.Image; 
 
     private _rectSize: {width: number, height: number} = {width: 300, height: 100};
     private _strSizeWithRect: number = this._rectSize.width * 1.3;
     private _questionTextStyle: Phaser.Types.GameObjects.Text.TextStyle = { fontFamily: 'rubik', fontSize: 80, align: 'center' };
-    private _strOffsetY: number = 150;
-
-    public isSubmitted: boolean = false;
+    private _strOffsetY: number = 100;
+    
+    private _data: {
+        answerBoxContent: Answer | undefined,
+        isSubmitted: boolean
+    } = {
+        answerBoxContent: undefined,
+        isSubmitted: false
+    }
+    
 
     constructor(scene: Phaser.Scene, config: QuestionConfig) {
         super(scene, innerWidth / 2, innerHeight / 2);
         scene.add.existing(this);
         this._scene = scene;
         this._config = config;
-
-        this._drawQuestionTexts( config.value.split('\n') );
+        this._drawQuestionTexts( config.value );
         this._drawAnswerContainer();
+        
         
     }
 
-    private _drawQuestionTexts(strArray: string[]): void{
+    private _createWordsMap(words: string[]): {word: string, count: number}[]{
+        const wordsArr: {word: string, count: number}[] = [];
+        
+        words.forEach(word => {
+            if(word == '###'){
+                wordsArr.push({word: '###', count: 300 });
+            }else{
+                const charText: Phaser.GameObjects.Text = this._scene.add.text(0, 0, word, this._questionTextStyle).setAlpha(0);
+                const length: number = charText.displayWidth;
+                wordsArr.push({word, count:length});
+                charText.destroy();
+            }
+        });
+
+        return wordsArr;
+    }
+
+    private _createLines(wordsArr: {word: string, count: number}[], maxWidth: number): string[]{
+        const lines: string[] = [];
+
+        
+        let count: number = 0, str: string = '';
+        wordsArr.forEach((pair) => {
+            if(count + pair.count > maxWidth){
+                lines.push(str);
+                str = pair.word;
+                count = pair.count;
+            }else{
+                count += pair.count;
+                str+= " ";
+                str+= pair.word;
+            }
+        });
+        lines.push(str);   
+
+        return lines;
+
+    }
+
+    private _drawQuestionTexts(str: string): void{
         this._questionContainer = this._scene.add.container(0, 0);
         this.add(this._questionContainer);
+        this.sendToBack(this._questionContainer);
 
+        const words = str.split(" ");
 
+        const wordPairs = this._createWordsMap(words);
+        let strArray: string[] = this._createLines(wordPairs, innerWidth * 0.8);
+      
         strArray.forEach((str, index) => {
             if(str.includes('###')){
 
@@ -47,32 +95,48 @@ export class Question extends Phaser.GameObjects.Container {
                 const textAfter = str.substring(placeholderIndex + 3); 
 
                 // Create text objects for each part
-                this._textBeforeRect = this._scene.add
+                const textBeforeRect = this._scene.add
                 .text(0, index * this._strOffsetY, textBefore, this._questionTextStyle)
                 .setResolution(2);
 
-                this._textAfterRect = this._scene.add
-                .text(this._textBeforeRect.displayWidth + (this._rectSize.width / 10) * 2 + this._rectSize.width, index * this._strOffsetY, textAfter, this._questionTextStyle)
+                const textAfterRect = this._scene.add
+                .text(textBeforeRect.displayWidth + (this._rectSize.width / 10) * 2 + this._rectSize.width, index * this._strOffsetY, textAfter, this._questionTextStyle)
                 .setResolution(2);
                 
-                this._rect = this._scene.physics.add.image(this._textBeforeRect.displayWidth + (this._rectSize.width / 10) + (this._rectSize.width / 2), index * this._strOffsetY + this._rectSize.height / 2, 'answerBox').setDisplaySize(this._rectSize.width, this._rectSize.height);
-
-                this._strSizeWithRect += this._textAfterRect.displayWidth;
-                this._strSizeWithRect += this._textBeforeRect.displayWidth;
-
-                this._questionContainer.add([this._rect, this._textBeforeRect, this._textAfterRect]);
+                this._rect = this._scene.physics
+                .add.image(textBeforeRect.displayWidth + (this._rectSize.width / 10) + (this._rectSize.width / 2), index * this._strOffsetY + this._rectSize.height / 2, 'answerBox')
+                .setDisplaySize(this._rectSize.width, this._rectSize.height)
+                .setData('answer', this._data.answerBoxContent);
                 
+                
+                this._strSizeWithRect += textAfterRect.displayWidth;
+                this._strSizeWithRect += textBeforeRect.displayWidth;
+
+
+                //SET TEXTS CENTER
+                textBeforeRect.x -= this._strSizeWithRect / 2;
+                textAfterRect.x -= this._strSizeWithRect / 2;
+                this._rect.x -= this._strSizeWithRect / 2;
+                
+                this._questionContainer.add([this._rect, textBeforeRect, textAfterRect]);
+                
+                if(this._data.answerBoxContent){
+                    this._data.answerBoxContent.setPosition(this._rect.x - this._answersContainer.x + this._questionContainer.x, this._rect.y + Math.abs(this._answersContainer.y) + this._questionContainer.y);
+                    this._rect.setData('answer', this._data.answerBoxContent);
+                    this.checkAndSubmit(true);
+                    
+                }
+                    
             }else{
-                this._textWithouthRect = this._scene.add.text(0, index * this._strOffsetY, str, this._questionTextStyle).setResolution(2);
-                this._textWithouthRect.x -= this._textWithouthRect.displayWidth / 2;
-                this._questionContainer.add(this._textWithouthRect);
+                const textWithouthRect = this._scene.add.text(0, index * this._strOffsetY, str, this._questionTextStyle).setResolution(2);
+                textWithouthRect.x -= textWithouthRect.displayWidth / 2;
+                this._questionContainer.add(textWithouthRect);
             }
         });
 
-        //SET TEXTS CENTER
-        this._textBeforeRect.x -= this._strSizeWithRect / 2;
-        this._textAfterRect.x -= this._strSizeWithRect / 2;
-        this._rect.x -= this._strSizeWithRect / 2;
+        // const questionContainerWidth: number = Math.max(this._strSizeWithRect ?? 0, textWithouthRect?.displayWidth ?? 0); 
+        // this._questionContainer.width = questionContainerWidth;
+        // this._questionContainer.displayWidth = questionContainerWidth;
     }
 
     private _drawAnswerContainer(): void{
@@ -84,7 +148,7 @@ export class Question extends Phaser.GameObjects.Container {
         
         // Create and add answer items to the container
         this._config.answers.forEach((answer) => {
-            const item = new Answer(this._scene, {size: this._rectSize, position: {x: 0, y: 0}, value: answer }, this._rect, this._containerBackgroundBounds);
+            const item = new Answer(this._scene, {size: this._rectSize, position: {x: 0, y: 0}, value: answer }, this._rect, this._containerBackgroundBounds, this._changeAnswerBoxStateCallBack);
             this._answersContainer.add(item);
         });        
         this._alignAnswers(this._answersContainer.list as Answer[], this._answersContainer.list.length, 1, this._rectSize.width, this._rectSize.height, itemsPadding);
@@ -127,12 +191,17 @@ export class Question extends Phaser.GameObjects.Container {
         this._answersContainer.list.forEach(item => {
             if(item instanceof Answer)item.lockInteractions();
         });
-        this.isSubmitted = true;
+        this._data.isSubmitted = true;
     }
 
-    public checkAndSubmit(): Promise<boolean>{
+
+    private _changeAnswerBoxStateCallBack = (answer?: Answer): void => {
+        this._data.answerBoxContent = answer;
+    }
+
+    public checkAndSubmit(force?: boolean): Promise<boolean>{
        return new Promise((resolve, _reject) => {
-        const answer: Answer | undefined = this._rect.getData('answer');
+        const answer: Answer | undefined = this._rect.getData('answer') ?? this._data.answerBoxContent;
         this._lock();
         if(answer == undefined) {
             
@@ -142,9 +211,14 @@ export class Question extends Phaser.GameObjects.Container {
         const isCorrect: boolean = answer.valueText === this._config.correctAnswer;
         let statusImage: Phaser.GameObjects.Image = this._scene.add
         .image(this._rect.x + this._rectSize.width / 2 - 30, this._rect.y, isCorrect ? 'correct' : 'incorrect')
-        .setDisplaySize(60, 60);
+        .setDisplaySize(force ? 30 : 60, force ? 30 : 60);
 
+        this.bringToTop(this._rect.parentContainer);
+        this._rect.setVisible(false);
         this._rect.parentContainer.add(statusImage);
+        if(force)return resolve(true);
+        
+
         this._scene.tweens.add({
             targets: statusImage,
             displayWidth: 30,
@@ -201,13 +275,32 @@ export class Question extends Phaser.GameObjects.Container {
                 .setDisplaySize(this._rectSize.width + padding * 2, backgroundHeight)
                 .setPosition((<Answer>this._answersContainer.list[2]).x, 0);
 
-            this._answersContainer.setPosition((-innerWidth / 1.8) / Configs.scale + this._answersContainerBackground.displayWidth, 0);
+            this._answersContainer.setPosition((-innerWidth / 2) + this._answersContainerBackground.displayWidth, 0);
             this._questionContainer.setPosition(300, -this._answersContainer.y / 2 - this._rectSize.height);
         }
     }
 
+    private _resetQuestionObjects(): void{
+        this._questionContainer.list.forEach(item => {
+            console.log(item);
+            if(item instanceof Phaser.GameObjects.Text)item.destroy();
+        });
+        this._questionContainer.destroy();
+        this._rect.destroy();
+        this._strSizeWithRect = this._rectSize.width * 1.3;
+    }
+
     public onScreenChange(): void{
-       this._switchLayout(true);
-       this.setPosition(innerWidth / 2, innerHeight / 2).setScale(Configs.scale);
+       this.setPosition(innerWidth / 2, innerHeight / 2)//.setScale(Configs.scale);
+
+
+        if(this.visible){
+            this._resetQuestionObjects();
+            this._drawQuestionTexts(this._config.value);
+            this._answersContainer.list.forEach(item => {
+                if(item instanceof Answer) item.setAnswerRect(this._rect);
+            });
+        }
+
     }
 }

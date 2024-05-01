@@ -11,14 +11,17 @@ export class Answer extends Phaser.GameObjects.Container{
     private _answerRect: Phaser.GameObjects.Image;
     
     private _getBackgroundObject: () => Phaser.GameObjects.Image;
+    private _changeAnswerBoxStateCallBack: (answer?: Answer) => void;
 
-    constructor(scene: Phaser.Scene, config: Entities.AnswerConfig, answerRect: Phaser.GameObjects.Image, getBackgroundObject: () => Phaser.GameObjects.Image){
+    constructor(scene: Phaser.Scene, config: Entities.AnswerConfig, answerRect: Phaser.GameObjects.Image, getBackgroundObject: () => Phaser.GameObjects.Image, changeAnswerBoxStateCallBack: (answer?: Answer) => void){
         super(scene, config.position.x, config.position.y);
             
         this._scene = scene;
         this._config = config;
         this._answerRect = answerRect;
         this._getBackgroundObject = getBackgroundObject;
+        this._changeAnswerBoxStateCallBack = changeAnswerBoxStateCallBack;
+
         this._draw();
         this._addEvent();// Add event listeners for drag interaction
     }
@@ -83,8 +86,8 @@ export class Answer extends Phaser.GameObjects.Container{
                 });
             }
              // Calculate the new position of the container based on drag movement and scale
-            const newX = this._dragStartPosition.x + dragX / Configs.scale;
-            const newY = this._dragStartPosition.y + dragY / Configs.scale;
+            const newX = this._dragStartPosition.x + dragX /// Configs.scale;
+            const newY = this._dragStartPosition.y + dragY /// Configs.scale;
             this.setPosition(newX, newY);// Update the position of the container
         });
 
@@ -104,17 +107,21 @@ export class Answer extends Phaser.GameObjects.Container{
                 }else{
                     let answer = this._answerRect.getData('answer');// If the answer rectangle is not empty, tween the previous answer back to its initial position
                     this._answerRect.setData('answer', this);// Set the current answer to the answer rectangle
+                    
 
                     // Tween animation to return the previous answer to its initial position
                     this._moveAnimation(answer, {x: answer.x, y: answer.y}, {x: answer.initialPointPoisition.x, y: answer.initialPointPoisition.y});
 
                 }
                 
+
+                this._changeAnswerBoxStateCallBack(this);
                 // snap the container to the answer rectangle's position
-                this._moveAnimation(this, {x: this.x, y: this.y}, {x: this._answerRect.x - this.parentContainer.x + this._answerRect.parentContainer.x, y: this._answerRect.y + Math.abs(this.parentContainer.y)});
+                this._moveAnimation(this, {x: this.x, y: this.y}, {x: this._answerRect.x - this.parentContainer.x + this._answerRect.parentContainer.x, y: this._answerRect.y + Math.abs(this.parentContainer.y) + this._answerRect.parentContainer.y});
                 
             } else {
-                
+                this._answerRect.setData('answer', undefined);
+                this._changeAnswerBoxStateCallBack();
                 // If the background does not intersect with the answer rectangle, return the container to its initial position
                 this._moveAnimation(this, {x: this.x, y: this.y}, this._config.position);
 
@@ -127,7 +134,6 @@ export class Answer extends Phaser.GameObjects.Container{
         let extraY: number = (Math.abs(startPoint.y - endPoint.y) / 8) * (startPoint.y > endPoint.y ? -1 : 1);
         let extraX: number = (Math.abs(startPoint.x - endPoint.x) / 8) * (startPoint.x > endPoint.x ? -1 : 1);
         let duration: number = Math.max(250, Math.max(Math.abs(extraX), Math.abs(extraY)) * 5);
-
 
         this._scene.tweens.add({
             targets: target,
@@ -146,6 +152,10 @@ export class Answer extends Phaser.GameObjects.Container{
                 });
             }
         });
+    }
+
+    public setAnswerRect(rect: Phaser.GameObjects.Image): void{
+        this._answerRect = rect;
     }
 
     public setCorrectPosition(x: number, y: number): void{
