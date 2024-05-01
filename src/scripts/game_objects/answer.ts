@@ -1,3 +1,4 @@
+import Configs from '../statics/configs';
 import * as Entities from '../statics/entities';
 
 export class Answer extends Phaser.GameObjects.Container{
@@ -9,15 +10,15 @@ export class Answer extends Phaser.GameObjects.Container{
     private _dragStartPosition!: Phaser.Math.Vector2;
     private _answerRect: Phaser.GameObjects.Image;
     
-    private _func: any;
+    private _getBackgroundObject: () => Phaser.GameObjects.Image;
 
-    constructor(scene: Phaser.Scene, config: Entities.AnswerConfig, answerRect: Phaser.GameObjects.Image, func: any){
+    constructor(scene: Phaser.Scene, config: Entities.AnswerConfig, answerRect: Phaser.GameObjects.Image, getBackgroundObject: () => Phaser.GameObjects.Image){
         super(scene, config.position.x, config.position.y);
             
         this._scene = scene;
         this._config = config;
         this._answerRect = answerRect;
-        this._func = func;
+        this._getBackgroundObject = getBackgroundObject;
         this._draw();
         this._addEvent();// Add event listeners for drag interaction
     }
@@ -68,31 +69,30 @@ export class Answer extends Phaser.GameObjects.Container{
         });
 
         this._background.on('drag', (_pointer: Phaser.Input.Pointer, dragX: number, dragY: number) => {
-            if(Math.abs(dragX) > 2 && Math.abs(dragY) > 2 && Phaser.Geom.Intersects.RectangleToRectangle(this.getBounds(), this._func().getBounds())){
+            if(Math.abs(dragX) > 2 && Math.abs(dragY) > 2 && Phaser.Geom.Intersects.RectangleToRectangle(this.getBounds(), this._getBackgroundObject().getBounds())){
                 this._scene.add.tween({
-                    targets: this._func(),
+                    targets: this._getBackgroundObject(),
                     alpha: 0.3,
                     duration: 250
                 });
             }else{
                 this._scene.add.tween({
-                    targets: this._func(),
+                    targets: this._getBackgroundObject(),
                     alpha: 0,
                     duration: 250
                 });
             }
              // Calculate the new position of the container based on drag movement and scale
-            let scale: number = innerWidth < 1001 ? (innerWidth / 1300) : (innerWidth / 1920);
-            const newX = this._dragStartPosition.x + dragX / scale;
-            const newY = this._dragStartPosition.y + dragY / scale;
+            const newX = this._dragStartPosition.x + dragX / Configs.scale;
+            const newY = this._dragStartPosition.y + dragY / Configs.scale;
             this.setPosition(newX, newY);// Update the position of the container
         });
 
 
         this._background.on('dragend', () => {
-            let isRectEmpty = this._answerRect.getData('answer') === undefined; // Check if the answer rectangle is empty
+            let isRectEmpty = this._answerRect.getData('answer') === undefined || this._answerRect.getData('answer').valueText === this.valueText; // Check if the answer rectangle is empty
             this._scene.add.tween({
-                targets: this._func(),
+                targets: this._getBackgroundObject(),
                 alpha: 0,
                 duration: 250
             });
@@ -111,12 +111,13 @@ export class Answer extends Phaser.GameObjects.Container{
                 }
                 
                 // snap the container to the answer rectangle's position
-                this._moveAnimation(this, {x: this.x, y: this.y}, {x: this._answerRect.x, y: this._answerRect.y + Math.abs(this.parentContainer.y)});
+                this._moveAnimation(this, {x: this.x, y: this.y}, {x: this._answerRect.x - this.parentContainer.x + this._answerRect.parentContainer.x, y: this._answerRect.y + Math.abs(this.parentContainer.y)});
                 
             } else {
                 
                 // If the background does not intersect with the answer rectangle, return the container to its initial position
                 this._moveAnimation(this, {x: this.x, y: this.y}, this._config.position);
+
             }
         });
 

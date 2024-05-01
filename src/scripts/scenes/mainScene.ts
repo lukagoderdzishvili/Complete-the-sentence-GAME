@@ -6,6 +6,7 @@ import { toggleFullScreen } from "../helpers";
 import { Timer } from "../game_objects/timer";
 import { FinishDialog } from "../partials/finishDialog";
 import { CorrectAnswerCounter } from "../game_objects/correctAnswerCounter";
+import Configs from "../statics/configs";
 
 export default class MainScene extends Phaser.Scene{
     private _audioManager!: AudioManager;
@@ -147,19 +148,19 @@ export default class MainScene extends Phaser.Scene{
     }
 
     public onScreenChange(): void{
-        let scale: number = innerWidth < 1001 ? Math.min((innerWidth / 1300), innerHeight / 800) : Math.min(innerWidth / 1920, innerHeight / 1080);
+        Configs.onScreenChange();
         this._background
         .setPosition(innerWidth / 2, innerHeight / 2)
         .setDisplaySize(innerWidth, innerHeight);
 
-        this._timer.setScale(scale * 1.2);
+        this._timer.setScale(Configs.scale * 1.2);
 
-        this._correctAnswerCounter.onScreenChange(scale);
+        this._correctAnswerCounter.onScreenChange(Configs.scale);
 
         this._fullScreenButton.setPosition(innerWidth - 30, innerHeight - 30);
         this._playAgainButton.setPosition(30, innerHeight - 30);
         this._paginator.onScreenChange();
-        this._submitButton.setPosition(innerWidth / 2, innerHeight - 40).setScale(Math.max(0.5, scale));
+        this._submitButton.setPosition(innerWidth / 2, innerHeight - 40).setScale(Math.max(0.5, Configs.scale));
 
         this._questions.forEach(question => {
             question.onScreenChange();
