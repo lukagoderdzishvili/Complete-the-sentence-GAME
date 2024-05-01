@@ -9,15 +9,15 @@ export class Answer extends Phaser.GameObjects.Container{
     private _dragStartPosition!: Phaser.Math.Vector2;
     private _answerRect: Phaser.GameObjects.Image;
     
+    private _func: any;
 
-
-    constructor(scene: Phaser.Scene, config: Entities.AnswerConfig, answerRect: Phaser.GameObjects.Image){
+    constructor(scene: Phaser.Scene, config: Entities.AnswerConfig, answerRect: Phaser.GameObjects.Image, func: any){
         super(scene, config.position.x, config.position.y);
             
         this._scene = scene;
         this._config = config;
         this._answerRect = answerRect;
-
+        this._func = func;
         this._draw();
         this._addEvent();// Add event listeners for drag interaction
     }
@@ -68,6 +68,19 @@ export class Answer extends Phaser.GameObjects.Container{
         });
 
         this._background.on('drag', (_pointer: Phaser.Input.Pointer, dragX: number, dragY: number) => {
+            if(Math.abs(dragX) > 2 && Math.abs(dragY) > 2 && Phaser.Geom.Intersects.RectangleToRectangle(this.getBounds(), this._func().getBounds())){
+                this._scene.add.tween({
+                    targets: this._func(),
+                    alpha: 0.3,
+                    duration: 250
+                });
+            }else{
+                this._scene.add.tween({
+                    targets: this._func(),
+                    alpha: 0,
+                    duration: 250
+                });
+            }
              // Calculate the new position of the container based on drag movement and scale
             let scale: number = innerWidth < 1001 ? (innerWidth / 1300) : (innerWidth / 1920);
             const newX = this._dragStartPosition.x + dragX / scale;
@@ -78,7 +91,11 @@ export class Answer extends Phaser.GameObjects.Container{
 
         this._background.on('dragend', () => {
             let isRectEmpty = this._answerRect.getData('answer') === undefined; // Check if the answer rectangle is empty
-
+            this._scene.add.tween({
+                targets: this._func(),
+                alpha: 0,
+                duration: 250
+            });
              // Check if the background intersects with the answer rectangle
             if (Phaser.Geom.Intersects.RectangleToRectangle(this.getBounds(), this._answerRect.getBounds())) {
                 
@@ -106,29 +123,32 @@ export class Answer extends Phaser.GameObjects.Container{
     }
 
     private _moveAnimation(target: Answer, startPoint: {x: number, y: number}, endPoint: {x: number, y: number}): void{
-                let extraY: number = (Math.abs(startPoint.y - endPoint.y) / 8) * (startPoint.y > endPoint.y ? -1 : 1);
-                let extraX: number = (Math.abs(startPoint.x - endPoint.x) / 8) * (startPoint.x > endPoint.x ? -1 : 1);
-                let duration: number = Math.max(250, Math.max(Math.abs(extraX), Math.abs(extraY)) * 5);
+        let extraY: number = (Math.abs(startPoint.y - endPoint.y) / 8) * (startPoint.y > endPoint.y ? -1 : 1);
+        let extraX: number = (Math.abs(startPoint.x - endPoint.x) / 8) * (startPoint.x > endPoint.x ? -1 : 1);
+        let duration: number = Math.max(250, Math.max(Math.abs(extraX), Math.abs(extraY)) * 5);
 
 
-                // If the background does not intersect with the answer rectangle, return the container to its initial position
+        this._scene.tweens.add({
+            targets: target,
+            x: endPoint.x + extraX,
+            y: endPoint.y + extraY,
+            duration,
+            ease: 'Power5',
+
+            onComplete: () => {
                 this._scene.tweens.add({
                     targets: target,
-                    x: endPoint.x + extraX,
-                    y: endPoint.y + extraY,
-                    duration,
-                    ease: 'Power5',
-
-                    onComplete: () => {
-                        this._scene.tweens.add({
-                            targets: target,
-                            x: endPoint.x,
-                            y: endPoint.y,
-                            duration: duration / 2,
-                            ease: 'Linear'
-                        });
-                    }
+                    x: endPoint.x,
+                    y: endPoint.y,
+                    duration: duration / 2,
+                    ease: 'Linear'
                 });
+            }
+        });
+    }
+
+    public setCorrectPosition(x: number, y: number): void{
+        this._config.position = {x, y};
     }
 
     public lockInteractions(): void{

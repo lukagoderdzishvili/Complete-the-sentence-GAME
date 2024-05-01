@@ -1,8 +1,33 @@
 {
     "list": [
         {
+            "value": "### wild animals",
+            "answers": ["use", "kill", "live"],
+            "correctAnswer": "kill"
+        },
+        {
+            "value": "### water resources",
+            "answers": ["save", "arrange", "feed", "enjoy"],
+            "correctAnswer": "save"
+        },
+        {
+            "value": "### metal, glass, and plastic",
+            "answers": ["pollute", "kill", "exhibit", "recycle"],
+            "correctAnswer": "recycle"
+        },
+        {
+            "value": "### air, water, and soil",
+            "answers": ["drink", "exhibit", "pollute", "draw"],
+            "correctAnswer": "pollute"
+        },
+        {
+            "value": "### transportation \n (bus, train, and subway)",
+            "answers": ["public", "save", "waste", "spend"],
+            "correctAnswer": "public"
+        },
+        {
             "value": "I can't carry this suitcase \n it is ### heavy.",
-            "answers": ["enough", "too"],
+            "answers": ["enough", "too", "test", "pass"],
             "correctAnswer": "too"
         },
         {
