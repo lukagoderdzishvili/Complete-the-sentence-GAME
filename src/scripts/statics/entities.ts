@@ -6,7 +6,7 @@ export interface QuestionConfig {
     value: string;
     answers: string[];
     correctAnswer: string;
-    layout: 'long' | 'mini'
+    layout: string;
 }
 
 export interface AnswerConfig{

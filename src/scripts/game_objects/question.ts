@@ -250,8 +250,19 @@ export class Question extends Phaser.GameObjects.Container {
         
     }
 
-    private _switchLayout(layout: 'long' | 'mini'): void {
-        if (layout === 'long') {
+    private _switchLayout(layout: string): void {
+        if (layout === 'mini') {
+            // Align answers without the first item
+            const answersClone = [...this._answersContainer.list];
+            answersClone.shift(); // Remove the first item
+            this._alignAnswers(answersClone as Answer[], 1, answersClone.length, 300, 100, 50);
+
+            // Set the position and size of the background
+            this._answersContainerBackground
+                .setDisplaySize((350) * this._row , (150) * this._column)
+                .setPosition((<Answer>this._answersContainer.list[2]).x, 0);
+
+        }else{
             // Align answers without the first item
             const answersClone = [...this._answersContainer.list];
             answersClone.shift(); // Remove the first item
@@ -261,17 +272,6 @@ export class Question extends Phaser.GameObjects.Container {
             this._answersContainerBackground
                 .setDisplaySize((350) * this._row , (150) * this._column)
                 .setPosition(0, 0);
-
-        }else{
-            // Align answers without the first item
-            const answersClone = [...this._answersContainer.list];
-            answersClone.shift(); // Remove the first item
-            this._alignAnswers(answersClone as Answer[], 1, answersClone.length, 300, 100, 50);
-    
-            // Set the position and size of the background
-            this._answersContainerBackground
-                .setDisplaySize((350) * this._row , (150) * this._column)
-                .setPosition((<Answer>this._answersContainer.list[2]).x, 0);
         }
     }
 
