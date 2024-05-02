@@ -93,7 +93,7 @@ export class Question extends Phaser.GameObjects.Container {
         const words = str.split(" ");
 
         const wordPairs = this._createWordsMap(words);
-        let strArray: string[] = this._createLines(wordPairs, this._config.layout === 'long' ? innerWidth * 0.8 : innerWidth / 2);
+        let strArray: string[] = this._createLines(wordPairs, this._config.layout === 'long' ? innerWidth * 0.7 : innerWidth / 2);
       
         strArray.forEach((str, index) => {
             if(str.includes('###')){
@@ -296,8 +296,9 @@ export class Question extends Phaser.GameObjects.Container {
 
     public onScreenChange(): void{
         this._localScale = innerWidth < 501  && this._config.layout === 'long' ? Configs.mobileScale : Configs.webScale ;
-        this._questionTextStyle.fontSize = 80 * this._localScale;
-        this._strOffsetY = 100 * this._localScale;
+        let extraScaleForQuestion: number = innerWidth < 769  && innerHeight < 600 ? 1 : 1.3; 
+        this._questionTextStyle.fontSize = 80 * this._localScale * extraScaleForQuestion;
+        this._strOffsetY = 100 * this._localScale * extraScaleForQuestion;
         this._rectSize = {
             width: 300 * this._localScale,
             height: 100 * this._localScale
@@ -305,7 +306,7 @@ export class Question extends Phaser.GameObjects.Container {
 
 
 
-       this.setPosition(innerWidth / 2, innerHeight / 2);
+       this.setPosition(innerWidth / 2, innerHeight / 2 );
 
         if(this.visible){
             this._answersContainer.setScale(this._localScale).setPosition(this._config.layout === 'long' ? 0 : -innerWidth / 2 + this._answersContainerBackground.displayWidth * this._localScale, this._config.layout === 'long' ? -innerHeight / 5 : 0);
