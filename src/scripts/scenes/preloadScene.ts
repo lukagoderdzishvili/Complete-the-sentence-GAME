@@ -30,7 +30,7 @@ export default class PreloadScene extends Phaser.Scene {
 
     public complete(): void {
         document.getElementById('loader')?.remove();        
-        this.scene.start('MainScene');
+        this.scene.start('StartScene');
         window.dispatchEvent(new Event('resize'));
     }
 }
