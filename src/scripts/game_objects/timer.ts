@@ -6,7 +6,7 @@ export class Timer extends Phaser.GameObjects.Container{
     private _timerEvent!: Phaser.Time.TimerEvent;
 
     constructor(scene: Phaser.Scene){
-        super(scene, 30, 20);
+        super(scene, 15, 10);
         scene.add.existing(this);
         this._scene = scene;
       
@@ -15,8 +15,8 @@ export class Timer extends Phaser.GameObjects.Container{
 
 
     private _create(): void{
-        this._text = this._scene.add.text(0, 0, this._formatTime(this._initialTime), {fontFamily: 'rubik', fontSize: 40});
-    
+        this._text = this._scene.add.text(0, 0, this._formatTime(this._initialTime), {fontFamily: 'rubik', fontSize: 40}).setOrigin(0, 0);
+        
         this.add(this._text);
         // Each 1000 ms call onEvent
         this._timerEvent = this._scene.time.addEvent({ delay: 1000, callback: this._onEvent, callbackScope: this, loop: true });
@@ -57,4 +57,9 @@ export class Timer extends Phaser.GameObjects.Container{
         return this._text.text;
     }
 
+
+    public onScreenChange(): void{
+        const scale: number = innerWidth < 1001 ? 0.7 : innerWidth > 1920 ? innerWidth / 1920 : 1;
+        this.setPosition( 15 * scale, 10 * scale).setScale(scale);
+    }
 }

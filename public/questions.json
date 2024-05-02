@@ -1,69 +1,76 @@
 {
     "list": [
         {
-            "value": "lorem ipsum red blue ipsum ### wild animals test test rogknasngk",
-            "answers": ["use", "kill", "live"],
-            "correctAnswer": "kill"
-        },
-        {
             "value": "### water resources",
             "answers": ["save", "arrange", "feed", "enjoy"],
-            "correctAnswer": "save"
+            "correctAnswer": "save",
+            "layout": "long"
         },
         {
             "value": "### metal, glass, and plastic",
             "answers": ["pollute", "kill", "exhibit", "recycle"],
-            "correctAnswer": "recycle"
+            "correctAnswer": "recycle",
+            "layout": "mini"
         },
         {
             "value": "### air, water, and soil",
             "answers": ["drink", "exhibit", "pollute", "draw"],
-            "correctAnswer": "pollute"
+            "correctAnswer": "pollute",
+            "layout": "long"
         },
         {
             "value": "### transportation  (bus, train, and subway)",
             "answers": ["public", "save", "waste", "spend"],
-            "correctAnswer": "public"
+            "correctAnswer": "public",
+            "layout": "mini"
         },
         {
             "value": "I can't carry this suitcase  it is ### heavy.",
             "answers": ["enough", "too", "test", "pass"],
-            "correctAnswer": "too"
+            "correctAnswer": "too",
+            "layout": "long"
         },
         {
             "value": "This bag isn't big ###. I  cant't put all my clothes in it.",
             "answers": ["enough", "too"],
-            "correctAnswer": "enough"
+            "correctAnswer": "enough",
+            "layout": "mini"
         },
         {
             "value": "Is your meal warm ###. if  not i'll put it in the microwave",
             "answers": ["too", "enough?"],
-            "correctAnswer": "enough?"
+            "correctAnswer": "enough?",
+            "layout": "long"
         },
         {
             "value": "Mom was ###  worried to go to sleep.",
             "answers": ["enough", "too"],
-            "correctAnswer": "too"
+            "correctAnswer": "too",
+            "layout": "mini"
         },
         {
             "value": "I don't like this fizzy drink.  it's much ### sweet.",
             "answers": ["enough", "too"],
-            "correctAnswer": "too"
+            "correctAnswer": "too",
+            "layout": "long"
         },
         {
             "value": "We couldn't buy tickets. Because  we didn't have ### money",
             "answers": ["enough", "too"],
-            "correctAnswer": "enough"
+            "correctAnswer": "enough",
+            "layout": "long"
         },
         {
             "value": "She is ### young to  drink alcohol. She is only 16",
             "answers": ["too", "enough"],
-            "correctAnswer": "too"
+            "correctAnswer": "too",
+            "layout": "long"
         },
         {
             "value": "I couldn't see her anywhere because  it was getting ### foggy.",
             "answers": ["enough", "too"],
-            "correctAnswer": "too"
+            "correctAnswer": "too",
+            "layout": "long"
         }
         
     ]

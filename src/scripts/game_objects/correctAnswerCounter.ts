@@ -4,7 +4,7 @@ export class CorrectAnswerCounter extends Phaser.GameObjects.Container{
     private _icon!: Phaser.GameObjects.Image;
 
     constructor(scene: Phaser.Scene){
-        super(scene, innerWidth - 30, 20);
+        super(scene, innerWidth - 30, 32);
         scene.add.existing(this);
         this._scene = scene;
       
@@ -12,11 +12,11 @@ export class CorrectAnswerCounter extends Phaser.GameObjects.Container{
     }
 
     private _create(): void{
-        this._text = this._scene.add.text(0, 0, '0', {fontFamily: 'rubik', fontSize: 35, color: '#05fa32'});
+        this._text = this._scene.add.text(0, 0, '0', {fontFamily: 'rubik', fontSize: 40, color: '#05fa32'}).setResolution(2);
         this._text.x -= this._text.displayWidth / 2;
         this._text.y -= this._text.displayHeight / 2;
 
-        this._icon =  this._scene.add.image(-30, 0, 'checkmark').setDisplaySize(25, 28);
+        this._icon =  this._scene.add.image(-this._text.displayWidth - 10, 0, 'checkmark').setDisplaySize(30, 32);
         this.add([this._text, this._icon])
     }
 
@@ -33,8 +33,9 @@ export class CorrectAnswerCounter extends Phaser.GameObjects.Container{
         this._text.setText('0');
     }
 
-    public onScreenChange(scale: number): void{
-        this.setPosition(innerWidth - 30, 30).setScale(scale * ( innerWidth < 600 ? 2.5 : 1.5));
+    public onScreenChange(): void{
+        const scale: number = innerWidth < 1001 ? 0.7 : innerWidth > 1920 ? innerWidth / 1920 : 1;
+        this.setPosition(innerWidth - 30 * scale, 32 * scale).setScale(scale);
         
     }
 

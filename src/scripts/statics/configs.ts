@@ -1,7 +1,7 @@
 export default class Configs{
     static gameConfig: Phaser.Types.Core.GameConfig = {
         title: 'Complete the sentence',
-        version: "1.0.0",    
+        version: "1.1.0",    
     
         type: Phaser.AUTO,
         transparent: false,
@@ -12,8 +12,8 @@ export default class Configs{
             parent: 'app',
             mode: Phaser.Scale.RESIZE,
             autoCenter: Phaser.Scale.CENTER_BOTH,
-            width: '100%',
-            height: '100%',
+            width: 1920,
+            height: 1080,
             min: {
                 width: 320,
                 height: 200
@@ -42,10 +42,12 @@ export default class Configs{
         //}         
     };
 
-    static scale: number = innerWidth < 1001 ? Math.min((innerWidth / 1300), innerHeight / 800) : Math.min(innerWidth / 1920, innerHeight / 1080);
+    static webScale: number = Math.min(innerWidth / 1920, innerHeight / 1080);
+    static mobileScale: number = Math.min((innerWidth / 1200), innerHeight / 800) ;
 
 
     static onScreenChange(): void{
-        Configs.scale = innerWidth < 1001 ? Math.min((innerWidth / 1300), innerHeight / 800) : Math.min(innerWidth / 1920, innerHeight / 1080);
+        Configs.mobileScale = Math.min((innerWidth / 1200), innerHeight / 800);
+        Configs.webScale =  Math.min(innerWidth / 1920, innerHeight / 1080);
     }
 }

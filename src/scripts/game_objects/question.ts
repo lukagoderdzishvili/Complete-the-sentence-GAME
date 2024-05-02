@@ -11,11 +11,18 @@ export class Question extends Phaser.GameObjects.Container {
     private _answersContainerBackground!: Phaser.GameObjects.Image;
 
     private _rect!: Phaser.GameObjects.Image; 
+    private _statusIcon!: Phaser.GameObjects.Image;
 
     private _rectSize: {width: number, height: number} = {width: 300, height: 100};
+    private _answerItemsPadding: number = 50;
     private _strSizeWithRect: number = this._rectSize.width * 1.3;
     private _questionTextStyle: Phaser.Types.GameObjects.Text.TextStyle = { fontFamily: 'rubik', fontSize: 80, align: 'center' };
     private _strOffsetY: number = 100;
+    private _questionTextLinesCount: number = 3; 
+
+    private _localScale: number = Configs.webScale;
+    private _row!: number;
+    private _column!: number;
     
     private _data: {
         answerBoxContent: Answer | undefined,
@@ -31,10 +38,11 @@ export class Question extends Phaser.GameObjects.Container {
         scene.add.existing(this);
         this._scene = scene;
         this._config = config;
+        
+
         this._drawQuestionTexts( config.value );
         this._drawAnswerContainer();
-        
-        
+        this._switchLayout(this._config.layout);
     }
 
     private _createWordsMap(words: string[]): {word: string, count: number}[]{
@@ -42,7 +50,7 @@ export class Question extends Phaser.GameObjects.Container {
         
         words.forEach(word => {
             if(word == '###'){
-                wordsArr.push({word: '###', count: 300 });
+                wordsArr.push({word: '###', count: this._rectSize.width });
             }else{
                 const charText: Phaser.GameObjects.Text = this._scene.add.text(0, 0, word, this._questionTextStyle).setAlpha(0);
                 const length: number = charText.displayWidth;
@@ -72,6 +80,7 @@ export class Question extends Phaser.GameObjects.Container {
         });
         lines.push(str);   
 
+        this._questionTextLinesCount = lines.length;
         return lines;
 
     }
@@ -84,7 +93,7 @@ export class Question extends Phaser.GameObjects.Container {
         const words = str.split(" ");
 
         const wordPairs = this._createWordsMap(words);
-        let strArray: string[] = this._createLines(wordPairs, innerWidth * 0.8);
+        let strArray: string[] = this._createLines(wordPairs, this._config.layout === 'long' ? innerWidth * 0.8 : innerWidth / 2);
       
         strArray.forEach((str, index) => {
             if(str.includes('###')){
@@ -119,13 +128,6 @@ export class Question extends Phaser.GameObjects.Container {
                 this._rect.x -= this._strSizeWithRect / 2;
                 
                 this._questionContainer.add([this._rect, textBeforeRect, textAfterRect]);
-                
-                if(this._data.answerBoxContent){
-                    this._data.answerBoxContent.setPosition(this._rect.x - this._answersContainer.x + this._questionContainer.x, this._rect.y + Math.abs(this._answersContainer.y) + this._questionContainer.y);
-                    this._rect.setData('answer', this._data.answerBoxContent);
-                    this.checkAndSubmit(true);
-                    
-                }
                     
             }else{
                 const textWithouthRect = this._scene.add.text(0, index * this._strOffsetY, str, this._questionTextStyle).setResolution(2);
@@ -134,44 +136,51 @@ export class Question extends Phaser.GameObjects.Container {
             }
         });
 
-        // const questionContainerWidth: number = Math.max(this._strSizeWithRect ?? 0, textWithouthRect?.displayWidth ?? 0); 
-        // this._questionContainer.width = questionContainerWidth;
-        // this._questionContainer.displayWidth = questionContainerWidth;
+        this._answersContainer?.list.forEach(item => {
+            if(item instanceof Answer) item.setAnswerRect(this._rect);
+        });
+
+        this._questionContainer.setPosition(this._config.layout === 'long' ? 0 : innerWidth / 6, this._config.layout === 'long' ? 0 : -this._questionTextLinesCount * (this._rectSize.height / 2))
+
+        if(this._data.answerBoxContent){
+            this._data.answerBoxContent.setPosition((this._rect.x - this._answersContainer.x + this._questionContainer.x) / this._answersContainer.scale, (this._rect.y + Math.abs(this._answersContainer.y) + this._questionContainer.y) / this._answersContainer.scale);
+            this._rect.setData('answer', this._data.answerBoxContent);
+            if(this._data.isSubmitted)this.checkAndSubmit(true);
+            
+        }
+
+
     }
 
     private _drawAnswerContainer(): void{
         this._answersContainer = this._scene.add.container(0, -200);// Create the container for answers
         this.add(this._answersContainer);
-
-        // Calculate initial positions for answers
-        const itemsPadding: number = 50;
         
         // Create and add answer items to the container
         this._config.answers.forEach((answer) => {
-            const item = new Answer(this._scene, {size: this._rectSize, position: {x: 0, y: 0}, value: answer }, this._rect, this._containerBackgroundBounds, this._changeAnswerBoxStateCallBack);
+            const item = new Answer(this._scene, {size: this._rectSize, position: {x: 0, y: 0}, value: answer }, this._rect, this._getLocalScale, this._changeAnswerBoxStateCallBack);
             this._answersContainer.add(item);
         });        
-        this._alignAnswers(this._answersContainer.list as Answer[], this._answersContainer.list.length, 1, this._rectSize.width, this._rectSize.height, itemsPadding);
+        this._alignAnswers(this._answersContainer.list as Answer[], this._answersContainer.list.length, 1, this._rectSize.width, this._rectSize.height, this._answerItemsPadding);
         
         // Set up the background image for the container
-        const containerBackgroundSize = { width: (this._rectSize.width + itemsPadding) * this._answersContainer.list.length, height: 150 };
+        const containerBackgroundSize = { width: (this._rectSize.width + this._answerItemsPadding) * this._answersContainer.list.length, height: 150 };
         this._answersContainerBackground = this._createContainerBackground(containerBackgroundSize);
         this._answersContainer.add(this._answersContainerBackground);
         this._answersContainer.sendToBack(this._answersContainerBackground);
     }
 
-    private _containerBackgroundBounds = (): Phaser.GameObjects.Image => {
-        return this._answersContainerBackground;
-    }
-
     private _alignAnswers(target: Answer[], row: number, column: number, cellWidth: number, cellHeight: number, padding: number): void{
+        this._row = row;
+        this._column = column;
+
         const alignedAnswers = Phaser.Actions.GridAlign(target, {
             width: row,
             height: column,
             cellWidth: cellWidth + padding,
             cellHeight: cellHeight + padding,
-            x: ((this._rectSize.width + padding) / 2) - ((Math.max(row, 1) / 2) * (this._rectSize.width + padding)) ,
-            y: ((this._rectSize.height + padding) / 2) - ((Math.max(column, 1) / 2) * (this._rectSize.height + padding))
+            x: ((cellWidth + padding) / 2) - ((Math.max(row, 1) / 2) * (cellWidth + padding)) ,
+            y: ((cellHeight + padding) / 2) - ((Math.max(column, 1) / 2) * (cellHeight+ padding))
         });
 
         (<Answer[]>alignedAnswers).forEach(item => {
@@ -184,7 +193,7 @@ export class Question extends Phaser.GameObjects.Container {
     private _createContainerBackground(size: { width: number, height: number }): Phaser.GameObjects.Image {
         return this._scene.add.image(0, 0, 'answersContainer')
             .setDisplaySize(size.width, size.height)
-            .setAlpha(1);
+            .setAlpha(0.5);
     }
 
     private _lock(): void{
@@ -207,31 +216,30 @@ export class Question extends Phaser.GameObjects.Container {
             
             return resolve(false);
         };
-        
+        const size = (30) * this._localScale;
         const isCorrect: boolean = answer.valueText === this._config.correctAnswer;
-        let statusImage: Phaser.GameObjects.Image = this._scene.add
-        .image(this._rect.x + this._rectSize.width / 2 - 30, this._rect.y, isCorrect ? 'correct' : 'incorrect')
-        .setDisplaySize(force ? 30 : 60, force ? 30 : 60);
+        this._statusIcon = this._scene.add
+        .image(this._rect.x + this._rectSize.width / 2 - size, this._rect.y, isCorrect ? 'correct' : 'incorrect')
+        .setDisplaySize(size, size);
 
         this.bringToTop(this._rect.parentContainer);
         this._rect.setVisible(false);
-        this._rect.parentContainer.add(statusImage);
+        this._rect.parentContainer.add(this._statusIcon);
         if(force)return resolve(true);
         
 
         this._scene.tweens.add({
-            targets: statusImage,
-            displayWidth: 30,
-            displayHeight: 30,
+            targets: this._statusIcon,
+            displayWidth: size * 2,
+            displayHeight: size * 2,
             yoyo: true,
             duration: 500,
             onComplete: () => {
                 this._scene.tweens.add({
-                    targets: statusImage,
-                    displayWidth: 30,
-                    displayHeight: 30,
+                    targets: this._statusIcon,
+                    displayWidth: size,
+                    displayHeight: size,
                     duration: 500,
-                    completeDelay: 1000,
                     onComplete: () => {
                         return resolve(isCorrect);
                     }
@@ -242,47 +250,33 @@ export class Question extends Phaser.GameObjects.Container {
         
     }
 
-    private _switchLayout(long: boolean): void {
-        if (long) {
-            const padding: number = 50;
+    private _switchLayout(layout: 'long' | 'mini'): void {
+        if (layout === 'long') {
             // Align answers without the first item
             const answersClone = [...this._answersContainer.list];
             answersClone.shift(); // Remove the first item
-            this._alignAnswers(answersClone as Answer[], answersClone.length, 1, this._rectSize.width, this._rectSize.height, padding);
-    
-            // Calculate total height for the background
-            const backgroundSize = { width: (this._rectSize.width + padding) * answersClone.length, height: 150 };
+            this._alignAnswers(answersClone as Answer[], answersClone.length, 1, 300, 100, 50);
     
             // Set the position and size of the background
             this._answersContainerBackground
-                .setDisplaySize(backgroundSize.width, backgroundSize.height)
+                .setDisplaySize((350) * this._row , (150) * this._column)
                 .setPosition(0, 0);
 
-            this._answersContainer.setPosition(0, -200);
-            this._questionContainer.setPosition(0, 0);
         }else{
-            const padding: number = 50;
             // Align answers without the first item
             const answersClone = [...this._answersContainer.list];
             answersClone.shift(); // Remove the first item
-            this._alignAnswers(answersClone as Answer[], 1, answersClone.length, this._rectSize.width, this._rectSize.height, padding);
-    
-            // Calculate total height for the background
-            const backgroundHeight = (this._rectSize.height + padding) * answersClone.length;
+            this._alignAnswers(answersClone as Answer[], 1, answersClone.length, 300, 100, 50);
     
             // Set the position and size of the background
             this._answersContainerBackground
-                .setDisplaySize(this._rectSize.width + padding * 2, backgroundHeight)
+                .setDisplaySize((350) * this._row , (150) * this._column)
                 .setPosition((<Answer>this._answersContainer.list[2]).x, 0);
-
-            this._answersContainer.setPosition((-innerWidth / 2) + this._answersContainerBackground.displayWidth, 0);
-            this._questionContainer.setPosition(300, -this._answersContainer.y / 2 - this._rectSize.height);
         }
     }
 
     private _resetQuestionObjects(): void{
         this._questionContainer.list.forEach(item => {
-            console.log(item);
             if(item instanceof Phaser.GameObjects.Text)item.destroy();
         });
         this._questionContainer.destroy();
@@ -290,20 +284,56 @@ export class Question extends Phaser.GameObjects.Container {
         this._strSizeWithRect = this._rectSize.width * 1.3;
     }
 
+    private _getLocalScale = (): number => {
+        return this._localScale;
+    }
+
     public get isSubmitted(): boolean{
         return this._data.isSubmitted;
     }
 
     public onScreenChange(): void{
-       this.setPosition(innerWidth / 2, innerHeight / 2)//.setScale(Configs.scale);
+        this._localScale = innerWidth < 501  && this._config.layout === 'long' ? Configs.mobileScale : Configs.webScale ;
+        this._questionTextStyle.fontSize = 80 * this._localScale;
+        this._strOffsetY = 100 * this._localScale;
+        this._rectSize = {
+            width: 300 * this._localScale,
+            height: 100 * this._localScale
+        };
 
+
+
+       this.setPosition(innerWidth / 2, innerHeight / 2);
 
         if(this.visible){
+            this._answersContainer.setScale(this._localScale).setPosition(this._config.layout === 'long' ? 0 : -innerWidth / 2 + this._answersContainerBackground.displayWidth * this._localScale, this._config.layout === 'long' ? -innerHeight / 5 : 0);
             this._resetQuestionObjects();
             this._drawQuestionTexts(this._config.value);
-            this._answersContainer.list.forEach(item => {
-                if(item instanceof Answer) item.setAnswerRect(this._rect);
-            });
+
+            if(this._config.answers.length === 4){
+                const layout2 = {row: 2, column: 2, width: 300, height: 100, padding: 50};
+
+            
+                if( this._answersContainerBackground.displayWidth * this._localScale >= innerWidth){
+                    let answersClone = [...this._answersContainer.list];
+                    answersClone.shift();
+                
+                
+                    this._alignAnswers(answersClone as Answer[], layout2.row, layout2.column, layout2.width, layout2.height, layout2.padding);
+                    this._answersContainerBackground.setDisplaySize( (layout2.width + layout2.padding) * layout2.row, (layout2.height + layout2.padding) * layout2.column)
+
+                    this._questionContainer.setPosition(this._config.layout === 'long' ? 0 : innerWidth / 6, this._config.layout === 'long' ? 0 : -this._questionTextLinesCount * (this._rectSize.height / 2))
+
+                    if(this._data.answerBoxContent){
+                        this._data.answerBoxContent.setPosition((this._rect.x - this._answersContainer.x + this._questionContainer.x) / this._answersContainer.scale, (this._rect.y + Math.abs(this._answersContainer.y) + this._questionContainer.y) / this._answersContainer.scale);
+                        this._rect.setData('answer', this._data.answerBoxContent);
+                        if(this._data.isSubmitted)this.checkAndSubmit(true);
+                        
+                    }
+                }
+
+                
+            }
         }
 
     }

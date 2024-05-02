@@ -98,6 +98,7 @@ export class Paginator extends Phaser.GameObjects.Container{
 
 
     public onScreenChange(): void{
-        this.setPosition(innerWidth / 2, 30);
+        const scale: number = innerWidth < 1001 ? 0.7 : innerWidth > 1920 ? innerWidth / 1920 : 1;
+        this.setPosition(innerWidth / 2 , 32 * scale).setScale(scale);
     }
 }

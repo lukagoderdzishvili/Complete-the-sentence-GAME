@@ -5,7 +5,8 @@ export interface GameData {
 export interface QuestionConfig {
     value: string;
     answers: string[];
-    correctAnswer: string
+    correctAnswer: string;
+    layout: 'long' | 'mini'
 }
 
 export interface AnswerConfig{
