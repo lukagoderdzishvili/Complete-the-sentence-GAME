@@ -8,7 +8,7 @@
             },
             
             {
-                "url": "assets/images/background.jpg",
+                "url": "assets/images/background.webp",
                 "type": "image", 
                 "key": "background"
             },

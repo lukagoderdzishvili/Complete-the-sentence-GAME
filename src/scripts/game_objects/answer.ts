@@ -37,7 +37,7 @@ export class Answer extends Phaser.GameObjects.Container{
     private _draw(): void{
         // Create and configure the background image
         this._background = this._scene.physics.add
-        .image(0, 0, 'goldSquare')
+        .image(0, 0, this._config.texture)
         .setDisplaySize(this._config.size.width, this._config.size.height);
         this.add(this._background);
 

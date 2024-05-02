@@ -156,9 +156,11 @@ export class Question extends Phaser.GameObjects.Container {
         this._answersContainer = this._scene.add.container(0, -200);// Create the container for answers
         this.add(this._answersContainer);
         
+
+        const textures: string[] = ['goldSquare', 'silverSquare'];
         // Create and add answer items to the container
-        this._config.answers.forEach((answer) => {
-            const item = new Answer(this._scene, {size: this._rectSize, position: {x: 0, y: 0}, value: answer }, this._rect, this._getLocalScale, this._changeAnswerBoxStateCallBack);
+        this._config.answers.forEach((answer, index) => {
+            const item = new Answer(this._scene, {size: this._rectSize, position: {x: 0, y: 0}, value: answer , texture: textures[index % 2]}, this._rect, this._getLocalScale, this._changeAnswerBoxStateCallBack);
             this._answersContainer.add(item);
         });        
         this._alignAnswers(this._answersContainer.list as Answer[], this._answersContainer.list.length, 1, this._rectSize.width, this._rectSize.height, this._answerItemsPadding);
