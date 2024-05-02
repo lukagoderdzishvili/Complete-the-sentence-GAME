@@ -65,6 +65,7 @@ export default class MainScene extends Phaser.Scene{
         .setDisplaySize(250, 60)
         .setInteractive({cursor: 'pointer'})
         .on('pointerdown', () => {
+            this._submitButton.setAlpha(0.5);
             this._submitAnswer();
         });
     }
@@ -85,7 +86,7 @@ export default class MainScene extends Phaser.Scene{
         .setDisplaySize(50, 50)
         .setInteractive({cursor: 'pointer'})
         .on('pointerdown', () => {
-            this._resetGame();
+            this._resetGame(); 
         });
     }
 

@@ -290,6 +290,10 @@ export class Question extends Phaser.GameObjects.Container {
         this._strSizeWithRect = this._rectSize.width * 1.3;
     }
 
+    public get isSubmitted(): boolean{
+        return this._data.isSubmitted;
+    }
+
     public onScreenChange(): void{
        this.setPosition(innerWidth / 2, innerHeight / 2)//.setScale(Configs.scale);
 
