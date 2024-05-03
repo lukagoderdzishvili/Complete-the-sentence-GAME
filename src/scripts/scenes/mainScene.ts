@@ -114,7 +114,7 @@ export default class MainScene extends Phaser.Scene{
 
     private _finishGame(): void{
         this._timer.pause();
-        this._finishDialog = new FinishDialog(this, this._correctAnswerCounter.text, this._timer.value, this._resetGame);
+        this._finishDialog = new FinishDialog(this, this._correctAnswerCounter.text, this._questions.length, this._timer.value, false, this._resetGame);
     }
 
     private _increaseCorrectAnswerText(): void{
