@@ -213,11 +213,11 @@ export class Question extends Phaser.GameObjects.Container {
     public checkAndSubmit(force?: boolean): Promise<boolean>{
        return new Promise((resolve, _reject) => {
         const answer: Answer | undefined = this._rect.getData('answer') ?? this._data.answerBoxContent;
+
         this._lock();
-        if(answer == undefined) {
-            
-            return resolve(false);
-        };
+        if(answer == undefined) return resolve(false);
+
+
         const size = (30) * this._localScale;
         const isCorrect: boolean = answer.valueText === this._config.correctAnswer;
         this._statusIcon = this._scene.add
@@ -230,24 +230,18 @@ export class Question extends Phaser.GameObjects.Container {
         if(force)return resolve(true);
         
 
-        this._scene.tweens.add({
-            targets: this._statusIcon,
-            displayWidth: size * 2,
-            displayHeight: size * 2,
-            yoyo: true,
-            duration: 500,
-            onComplete: () => {
-                this._scene.tweens.add({
-                    targets: this._statusIcon,
-                    displayWidth: size,
-                    displayHeight: size,
-                    duration: 500,
-                    onComplete: () => {
-                        return resolve(isCorrect);
-                    }
-                });
-            }
-        });
+            this._scene.tweens.add({
+                targets: this._statusIcon,
+                displayWidth: size * 3,
+                displayHeight: size * 3,
+                duration: 500,
+                yoyo: true,
+                ease: Phaser.Math.Easing.Quadratic.In,
+                completeDelay: 250,
+                onComplete: () => {
+                    return resolve(isCorrect);
+                }
+            });
        });
         
     }

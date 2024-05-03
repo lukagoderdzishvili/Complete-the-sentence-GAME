@@ -12,7 +12,7 @@ export class CorrectAnswerCounter extends Phaser.GameObjects.Container{
     }
 
     private _create(): void{
-        this._text = this._scene.add.text(0, 0, '0', {fontFamily: 'rubik', fontSize: 40, color: '#05fa32'}).setResolution(2);
+        this._text = this._scene.add.text(0, 0, '0', {fontFamily: 'rubik', fontSize: 40, color: '#FFFFFF'}).setResolution(2);
         this._text.x -= this._text.displayWidth / 2;
         this._text.y -= this._text.displayHeight / 2;
 
