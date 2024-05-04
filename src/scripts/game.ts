@@ -28,7 +28,7 @@ export default class Game {
     }
 
     private _addListeners(): void {
-        this._gameObject.scale.on('resize', () => {
+        window.addEventListener('resize', () => {
             
             if(this._gameObject.scene.isActive('StartScene')){
                 this._startScene.onScreenChange();

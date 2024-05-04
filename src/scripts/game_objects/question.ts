@@ -17,9 +17,9 @@ export class Question extends Phaser.GameObjects.Container {
     private _rectSize: {width: number, height: number} = {width: 450, height: 210};
     private _answerItemsPadding: number = 50;
     private _strSizeWithRect: number = this._rectSize.width * 1.3;
-    private _questionTextStyle: Phaser.Types.GameObjects.Text.TextStyle = { fontFamily: 'opensans-semibold', fontSize: 95, align: 'center' };
+    private _questionTextStyle: Phaser.Types.GameObjects.Text.TextStyle = { fontFamily: 'rubik', fontSize: 95, align: 'center' };
     private _strOffsetY: number = this._initialSize.height ;
-    private _questionTextLinesCount: number = 3; 
+    private _questionTextLinesCount: number = 0; 
 
     private _localScale: number = Configs.webScale;
     private _row!: number;
@@ -50,6 +50,8 @@ export class Question extends Phaser.GameObjects.Container {
         //     this._switchLayout(this._config.layout);
         //     this.onScreenChange();
         // }, 3000)
+
+        window.dispatchEvent(new Event('resize'));
     }
 
     private _createWordsMap(words: string[]): {word: string, count: number}[]{
@@ -86,7 +88,7 @@ export class Question extends Phaser.GameObjects.Container {
             }
         });
         lines.push(str);   
-
+        
         this._questionTextLinesCount = lines.length;
         return lines;
 
@@ -101,7 +103,7 @@ export class Question extends Phaser.GameObjects.Container {
 
         const wordPairs = this._createWordsMap(words);
         let strArray: string[] = this._createLines(wordPairs, this._config.layout === 'long' ? innerWidth * 0.7 : innerWidth / 2.5);
-      
+       
         strArray.forEach((str, index) => {
             if(str.includes('###')){
 
@@ -134,6 +136,8 @@ export class Question extends Phaser.GameObjects.Container {
                 this._rect.x -= this._strSizeWithRect / 2;
                 
                 this._questionContainer.add([this._rect, textBeforeRect, textAfterRect]);
+
+                
                     
             }else{
                 const textWithouthRect = this._scene.add.text(0, index * this._strOffsetY, str, this._questionTextStyle).setResolution(2);
@@ -146,7 +150,7 @@ export class Question extends Phaser.GameObjects.Container {
             if(item instanceof Answer) item.setAnswerRect(this._rect);
         });
 
-        this._questionContainer.setPosition(this._config.layout === 'long' ? 0 : innerWidth / 6, this._config.layout === 'long' ? 0 : -this._questionTextLinesCount * (this._rectSize.height / 2))
+        this._questionContainer.setPosition(this._config.layout === 'long' ? 0 : innerWidth / 6, this._config.layout === 'long' ? (this._column === 2 && this._row === 2 ?  50 : 0) : -this._questionTextLinesCount * (this._rectSize.height / 2))
 
         if(this._data.answerBoxContent){
             this._data.answerBoxContent.setPosition(
@@ -297,8 +301,8 @@ export class Question extends Phaser.GameObjects.Container {
         this._alignAnswers(answersClone as Answer[], layout.row, layout.column, layout.width, layout.height, layout.padding);
         this._answersContainerBackground.setDisplaySize( (layout.width + layout.padding) * layout.row, (layout.height + layout.padding) * layout.column)
 
-        this._row = 2;
-        this._column = 2;
+        this._row = layout.row;
+        this._column = layout.column;
 
         // Reposition question container
         this._questionContainer.setPosition(this._config.layout === 'long' ? 0 : innerWidth / 6, this._config.layout === 'long' ? 0 : this._answersContainerBackground.getBounds().bottom - innerHeight / 2 + this._rectSize.height / 2)
@@ -310,7 +314,8 @@ export class Question extends Phaser.GameObjects.Container {
             if(this._data.isSubmitted)this.checkAndSubmit(true);
             
         }
-        this.onScreenChange();
+        
+        window.dispatchEvent(new Event('resize'));
     }
 
     private _getLocalScale = (): number => {
@@ -326,8 +331,6 @@ export class Question extends Phaser.GameObjects.Container {
         ? (innerWidth * 0.4) / (((this._initialSize.width + this._answerItemsPadding) * this._row) * this._localScale )
         : (innerWidth * 0.9) / (((this._initialSize.width + this._answerItemsPadding) * this._row) * this._localScale );
 
-        // if(answersScaleX > 1) answersScaleX = 1;
-        // if(answersScaleY > 1) answersScaleY = 1;
         return Math.min(1, Math.min(answersScaleX, answersScaleY));
     }
 
@@ -335,55 +338,48 @@ export class Question extends Phaser.GameObjects.Container {
         return this._data.isSubmitted;
     }
 
-    public onScreenChange(): void{
-        this._localScale = innerWidth < 501  && this._config.layout === 'long' ? Configs.mobileScale : Configs.webScale ;
-        const answerContainerScale: number = this._localScale * this._calculateAnswerContainerScaling();
+    public onScreenChange(extraScale?: number): void {
 
-        this._strOffsetY = this._initialSize.height * this._localScale;
+        this._localScale = innerWidth < 501 && this._config.layout === 'long' ? Configs.mobileScale : Configs.webScale;
+        let answerContainerScale: number = this._localScale * this._calculateAnswerContainerScaling() * (extraScale ?? 1);
 
-        // Update font size
-        this._questionTextStyle.fontSize = 95 * this._localScale;
-        if(innerHeight < 500 && innerWidth < 1001) this._questionTextStyle.fontSize = 70 * this._localScale;
-
-        // Update container size and position
+        // Update other properties based on the new scale
+        this._strOffsetY = this._initialSize.height * answerContainerScale;
+        this._questionTextStyle.fontSize = (innerWidth < 501 ? 70 : 95) * answerContainerScale;
         this._rectSize = {
             width: 450 * answerContainerScale,
             height: 210 * answerContainerScale
         };
+    
+        // Set the position of the container
+        this.setPosition(innerWidth / 2, innerHeight / 2);
 
-       this.setPosition(innerWidth / 2, innerHeight / 2 );
-
-        if(this.visible){
+        if (this.visible) {
             this._answersContainer.setScale(answerContainerScale);
-            // Reposition answer container
-            const answerContainerX = this._config.layout === 'long' ? 0 : -innerWidth / 1.7 + this._answersContainerBackground.displayWidth * this._localScale;
+            const answerContainerX = this._config.layout === 'long' ? 0 : -innerWidth / 2 + this._answersContainerBackground.displayWidth / 2 * answerContainerScale + innerWidth / 8;
             const answerContainerY = this._config.layout === 'long' ? -innerHeight / 5 : 0;
             this._answersContainer.setPosition(answerContainerX, answerContainerY);
 
 
-
-            // Reset question objects
+            // Reset and redraw the question texts
             this._resetQuestionObjects();
-
-
-            // Adjust question container position
-            this._questionContainer.y = this._config.layout === 'mini'
-            ? -this._questionContainer.getBounds().height / 2
+            this._questionContainer.y = this._config.layout === 'mini' 
+            ? -this._questionContainer.getBounds().height / 2 
             : this._answersContainerBackground.getBounds().bottom - innerHeight / 2 + this._rectSize.height / 2;
-            
-            this._drawQuestionTexts(this._config.value);
 
-            // Check if the layout is suitable for a 2x2 answer layout
-            if(this._config.answers.length === 4 ){
-                // Check if the answer container width exceeds the screen width
-                if( this._answersContainerBackground.displayWidth * this._localScale >= innerWidth){
-                    const layout2 = {row: 2, column: 2, width: this._initialSize.width, height: this._initialSize.height, padding: this._answerItemsPadding};
+
+
+            this._drawQuestionTexts(this._config.value);
+        
+            // Check if the layout is suitable for a 2x2 answer layout and adjust if necessary
+            if (this._config.answers.length === 4) {
+                if (this._answersContainerBackground.displayWidth * this._localScale >= innerWidth) {
+                    const layout2 = { row: 2, column: 2, width: this._initialSize.width, height: this._initialSize.height, padding: this._answerItemsPadding };
                     this._changeAnswersLayout(layout2);
                 }
-
-                
-            }
+            }            
+        
         }
-
     }
+    
 }

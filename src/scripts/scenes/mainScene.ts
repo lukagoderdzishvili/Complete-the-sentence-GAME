@@ -126,6 +126,7 @@ export default class MainScene extends Phaser.Scene{
         this._questions.forEach(question => {question.setVisible(false)});
         this._questions[this._paginator.currentPage - 1].setVisible(true).onScreenChange();
         this._checkSubmitButton();
+        window.dispatchEvent(new Event('resize'));
     }
 
     private _checkSubmitButton(): void{
@@ -167,10 +168,13 @@ export default class MainScene extends Phaser.Scene{
         this._playAgainButton.setDisplaySize(50 * buttonScale, 50 * buttonScale).setPosition(10 * buttonScale, innerHeight - 10 * buttonScale);
 
         this._paginator.onScreenChange();
-        this._submitButton.setPosition(innerWidth / 2, innerHeight - 40).setScale(Math.max(0.5, buttonScale));
+        this._submitButton.setPosition(innerWidth / 2, innerHeight - 30).setScale(Math.max(0.5, buttonScale));
 
         this._questions.forEach(question => {
             question.onScreenChange();
+            if(question.visible && question.getBounds().height > innerHeight * 0.7){
+                question.onScreenChange(question.getBounds().height / innerHeight * 0.9);
+            }
         })
     }
 }

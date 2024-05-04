@@ -47,7 +47,7 @@ export default class Configs{
 
 
     static onScreenChange(): void{
-        Configs.mobileScale = Math.min((innerWidth / 1200), innerHeight / 800);
+        Configs.mobileScale = Math.min((innerWidth / 1920), innerHeight / 1080) * 1.5;
         Configs.webScale =  Math.min(innerWidth / 1920, innerHeight / 1080);
     }
 }
