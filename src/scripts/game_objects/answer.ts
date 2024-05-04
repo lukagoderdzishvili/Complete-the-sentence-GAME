@@ -43,11 +43,11 @@ export class Answer extends Phaser.GameObjects.Container{
 
 
         // Create and configure the text for the answer container
-        this._text = this._scene.add.text(0, 0, this._config.value, {fontSize: 40, fontFamily: 'rubik', color: '#000000'});
-        this._text.x -= this._text.displayWidth / 2;
-        this._text.y -= this._text.displayHeight / 2;
-
+        this._text = this._scene.add.text(0, 0, this._config.value, {fontSize: 60, fontFamily: 'rubik', color: '#000000', align: 'center'}).setOrigin(0.5, 0.5);
+        if(this._text.displayWidth > this._config.size.width) this._text.setFontSize(50 * (this._config.size.width / this._text.displayWidth));
+        if(this._text.displayHeight > this._config.size.height)this._text.setFontSize(30 * (this._config.size.height / this._text.displayHeight));
         this.add(this._text);// Add the text to the container
+        
     }
 
 

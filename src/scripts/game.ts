@@ -15,7 +15,7 @@ export default class Game {
     constructor() {
         this._config = Configs.gameConfig;
 
-        this._preloadScene = new PreloadScene();
+        this._preloadScene = new PreloadScene('theme1');
         this._startScene = new StartScene();
         this._mainScene = new MainScene(data);
     

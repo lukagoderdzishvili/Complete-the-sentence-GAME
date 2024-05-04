@@ -6,60 +6,6 @@
                 "type": "image",
                 "key": "start"
             },
-            
-            {
-                "url": "assets/images/background.webp",
-                "type": "image", 
-                "key": "background"
-            },
-
-            {
-                "url": "assets/images/big-bold-gold-square.webp",
-                "type": "image", 
-                "key": "bigBoldGoldSquare"
-            },
-
-            {
-                "url": "assets/images/big-gold-square.webp",
-                "type": "image", 
-                "key": "bigGoldSquare"
-            },
-            {
-                "url": "assets/images/big-silver-square.webp",
-                "type": "image", 
-                "key": "bigSilverSquare"
-            },
-            {
-                "url": "assets/images/bold-gold-square.webp",
-                "type": "image", 
-                "key": "boldGoldSquare"
-            },
-
-            {
-                "url": "assets/images/gold-square.webp",
-                "type": "image", 
-                "key": "goldSquare"
-            },
-            {
-                "url": "assets/images/pink-square.webp",
-                "type": "image", 
-                "key": "pinkSquare"
-            },
-            {
-                "url": "assets/images/silver-square.webp",
-                "type": "image", 
-                "key": "silverSquare"
-            },
-            {
-                "url": "assets/images/correct.png",
-                "type": "image", 
-                "key": "correct"
-            },
-            {
-                "url": "assets/images/incorrect.png",
-                "type": "image", 
-                "key": "incorrect"
-            },
 
             {
                 "url": "assets/images/answer-box.png",

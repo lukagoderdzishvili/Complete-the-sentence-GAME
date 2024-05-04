@@ -1,6 +1,12 @@
 {
     "list": [
         {
+            "value": "### of nature means doğanın dengesi in Turkish",
+            "answers": ["balance", "medals",  "global warmingggg", "renewable"],
+            "correctAnswer": "too",
+            "layout": "long"
+        },
+        {
             "value": "Mom was ###  worried to go to sleep.",
             "answers": ["enough", "too", "tototo"],
             "correctAnswer": "too",

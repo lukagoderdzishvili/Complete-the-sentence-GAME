@@ -12,12 +12,13 @@ export class Question extends Phaser.GameObjects.Container {
 
     private _rect!: Phaser.GameObjects.Image; 
     private _statusIcon!: Phaser.GameObjects.Image;
-
-    private _rectSize: {width: number, height: number} = {width: 300, height: 100};
+    
+    private _initialSize: {width: number, height: number} = {width: 450, height: 210};
+    private _rectSize: {width: number, height: number} = {width: 450, height: 210};
     private _answerItemsPadding: number = 50;
     private _strSizeWithRect: number = this._rectSize.width * 1.3;
-    private _questionTextStyle: Phaser.Types.GameObjects.Text.TextStyle = { fontFamily: 'rubik', fontSize: 80, align: 'center' };
-    private _strOffsetY: number = 100;
+    private _questionTextStyle: Phaser.Types.GameObjects.Text.TextStyle = { fontFamily: 'opensans-semibold', fontSize: 95, align: 'center' };
+    private _strOffsetY: number = this._initialSize.height ;
     private _questionTextLinesCount: number = 3; 
 
     private _localScale: number = Configs.webScale;
@@ -43,6 +44,12 @@ export class Question extends Phaser.GameObjects.Container {
         this._drawQuestionTexts( config.value );
         this._drawAnswerContainer();
         this._switchLayout(this._config.layout);
+
+        // setInterval(() => {
+        //     this._config.layout = this._config.layout === 'mini' ? 'long' : 'mini';
+        //     this._switchLayout(this._config.layout);
+        //     this.onScreenChange();
+        // }, 3000)
     }
 
     private _createWordsMap(words: string[]): {word: string, count: number}[]{
@@ -93,7 +100,7 @@ export class Question extends Phaser.GameObjects.Container {
         const words = str.split(" ");
 
         const wordPairs = this._createWordsMap(words);
-        let strArray: string[] = this._createLines(wordPairs, this._config.layout === 'long' ? innerWidth * 0.7 : innerWidth / 2);
+        let strArray: string[] = this._createLines(wordPairs, this._config.layout === 'long' ? innerWidth * 0.7 : innerWidth / 2.5);
       
         strArray.forEach((str, index) => {
             if(str.includes('###')){
@@ -113,10 +120,9 @@ export class Question extends Phaser.GameObjects.Container {
                 .setResolution(2);
                 
                 this._rect = this._scene.physics
-                .add.image(textBeforeRect.displayWidth + (this._rectSize.width / 10) + (this._rectSize.width / 2), index * this._strOffsetY + this._rectSize.height / 2, 'answerBox')
+                .add.image(textBeforeRect.displayWidth + (this._rectSize.width / 10) + (this._rectSize.width / 2), textBeforeRect.getBounds().centerY, 'targetArea')
                 .setDisplaySize(this._rectSize.width, this._rectSize.height)
                 .setData('answer', this._data.answerBoxContent);
-                
                 
                 this._strSizeWithRect += textAfterRect.displayWidth;
                 this._strSizeWithRect += textBeforeRect.displayWidth;
@@ -143,10 +149,13 @@ export class Question extends Phaser.GameObjects.Container {
         this._questionContainer.setPosition(this._config.layout === 'long' ? 0 : innerWidth / 6, this._config.layout === 'long' ? 0 : -this._questionTextLinesCount * (this._rectSize.height / 2))
 
         if(this._data.answerBoxContent){
-            this._data.answerBoxContent.setPosition((this._rect.x - this._answersContainer.x + this._questionContainer.x) / this._answersContainer.scale, (this._rect.y + Math.abs(this._answersContainer.y) + this._questionContainer.y) / this._answersContainer.scale);
+            this._data.answerBoxContent.setPosition(
+                (this._rect.x - this._answersContainer.x + this._questionContainer.x) / this._answersContainer.scale,
+                (this._rect.y + Math.abs(this._answersContainer.y) + this._questionContainer.y) / this._answersContainer.scale
+            );
+            
             this._rect.setData('answer', this._data.answerBoxContent);
             if(this._data.isSubmitted)this.checkAndSubmit(true);
-            
         }
 
 
@@ -157,7 +166,7 @@ export class Question extends Phaser.GameObjects.Container {
         this.add(this._answersContainer);
         
 
-        const textures: string[] = ['goldSquare', 'silverSquare'];
+        const textures: string[] = ['letterBox1', 'letterBox2', 'letterBox3'];
         // Create and add answer items to the container
         this._config.answers.forEach((answer, index) => {
             const item = new Answer(this._scene, {size: this._rectSize, position: {x: 0, y: 0}, value: answer , texture: textures[index % 2]}, this._rect, this._getLocalScale, this._changeAnswerBoxStateCallBack);
@@ -166,7 +175,7 @@ export class Question extends Phaser.GameObjects.Container {
         this._alignAnswers(this._answersContainer.list as Answer[], this._answersContainer.list.length, 1, this._rectSize.width, this._rectSize.height, this._answerItemsPadding);
         
         // Set up the background image for the container
-        const containerBackgroundSize = { width: (this._rectSize.width + this._answerItemsPadding) * this._answersContainer.list.length, height: 150 };
+        const containerBackgroundSize = { width: (this._rectSize.width + this._answerItemsPadding) * this._answersContainer.list.length, height: this._initialSize.height + this._answerItemsPadding };
         this._answersContainerBackground = this._createContainerBackground(containerBackgroundSize);
         this._answersContainer.add(this._answersContainerBackground);
         this._answersContainer.sendToBack(this._answersContainerBackground);
@@ -193,9 +202,9 @@ export class Question extends Phaser.GameObjects.Container {
 
     // Create the background image for the answers container
     private _createContainerBackground(size: { width: number, height: number }): Phaser.GameObjects.Image {
-        return this._scene.add.image(0, 0, 'answersContainer')
+        return this._scene.add.image(0, 0, 'targetArea')
             .setDisplaySize(size.width, size.height)
-            .setAlpha(0.5);
+            //.setAlpha(0.5);
     }
 
     private _lock(): void{
@@ -251,22 +260,22 @@ export class Question extends Phaser.GameObjects.Container {
             // Align answers without the first item
             const answersClone = [...this._answersContainer.list];
             answersClone.shift(); // Remove the first item
-            this._alignAnswers(answersClone as Answer[], 1, answersClone.length, 300, 100, 50);
+            this._alignAnswers(answersClone as Answer[], 1, answersClone.length, this._initialSize.width, this._initialSize.height, this._answerItemsPadding);
 
             // Set the position and size of the background
             this._answersContainerBackground
-                .setDisplaySize((350) * this._row , (150) * this._column)
+                .setDisplaySize((this._initialSize.width + this._answerItemsPadding) * this._row , (this._initialSize.height + this._answerItemsPadding) * this._column)
                 .setPosition((<Answer>this._answersContainer.list[2]).x, 0);
 
         }else{
             // Align answers without the first item
             const answersClone = [...this._answersContainer.list];
             answersClone.shift(); // Remove the first item
-            this._alignAnswers(answersClone as Answer[], answersClone.length, 1, 300, 100, 50);
+            this._alignAnswers(answersClone as Answer[], answersClone.length, 1, this._initialSize.width, this._initialSize.height, this._answerItemsPadding);
     
             // Set the position and size of the background
             this._answersContainerBackground
-                .setDisplaySize((350) * this._row , (150) * this._column)
+                .setDisplaySize((this._initialSize.width + this._answerItemsPadding) * this._row , (this._initialSize.height + this._answerItemsPadding) * this._column)
                 .setPosition(0, 0);
         }
     }
@@ -280,8 +289,46 @@ export class Question extends Phaser.GameObjects.Container {
         this._strSizeWithRect = this._rectSize.width * 1.3;
     }
 
+    private _changeAnswersLayout(layout: {row: number, column: number, width: number, height: number, padding: number}): void{
+        let answersClone = [...this._answersContainer.list];
+        answersClone.shift();
+    
+    
+        this._alignAnswers(answersClone as Answer[], layout.row, layout.column, layout.width, layout.height, layout.padding);
+        this._answersContainerBackground.setDisplaySize( (layout.width + layout.padding) * layout.row, (layout.height + layout.padding) * layout.column)
+
+        this._row = 2;
+        this._column = 2;
+
+        // Reposition question container
+        this._questionContainer.setPosition(this._config.layout === 'long' ? 0 : innerWidth / 6, this._config.layout === 'long' ? 0 : this._answersContainerBackground.getBounds().bottom - innerHeight / 2 + this._rectSize.height / 2)
+        
+        // Reposition answer box if submitted
+        if(this._data.answerBoxContent){
+            this._data.answerBoxContent.setPosition((this._rect.x - this._answersContainer.x + this._questionContainer.x) / this._answersContainer.scale, (this._rect.y + Math.abs(this._answersContainer.y) + this._questionContainer.y) / this._answersContainer.scale);
+            this._rect.setData('answer', this._data.answerBoxContent);
+            if(this._data.isSubmitted)this.checkAndSubmit(true);
+            
+        }
+        this.onScreenChange();
+    }
+
     private _getLocalScale = (): number => {
-        return this._localScale;
+        return this._answersContainer.scale;
+    }
+
+    private _calculateAnswerContainerScaling(): number{
+        let answersScaleY: number = this._config.layout === 'mini' 
+        ? (innerHeight * 0.6) / (((this._initialSize.height + this._answerItemsPadding) * this._column) * this._localScale)
+        : (innerHeight / 3)  /  (((this._initialSize.height + this._answerItemsPadding) * this._column) * this._localScale );
+
+        let answersScaleX: number = this._config.layout === 'mini' 
+        ? (innerWidth * 0.4) / (((this._initialSize.width + this._answerItemsPadding) * this._row) * this._localScale )
+        : (innerWidth * 0.9) / (((this._initialSize.width + this._answerItemsPadding) * this._row) * this._localScale );
+
+        // if(answersScaleX > 1) answersScaleX = 1;
+        // if(answersScaleY > 1) answersScaleY = 1;
+        return Math.min(1, Math.min(answersScaleX, answersScaleY));
     }
 
     public get isSubmitted(): boolean{
@@ -290,43 +337,48 @@ export class Question extends Phaser.GameObjects.Container {
 
     public onScreenChange(): void{
         this._localScale = innerWidth < 501  && this._config.layout === 'long' ? Configs.mobileScale : Configs.webScale ;
-        let extraScaleForQuestion: number = innerWidth < 769  && innerHeight < 600 ? 1 : 1.3; 
-        this._questionTextStyle.fontSize = 80 * this._localScale * extraScaleForQuestion;
-        this._strOffsetY = 100 * this._localScale * extraScaleForQuestion;
+        const answerContainerScale: number = this._localScale * this._calculateAnswerContainerScaling();
+
+        this._strOffsetY = this._initialSize.height * this._localScale;
+
+        // Update font size
+        this._questionTextStyle.fontSize = 95 * this._localScale;
+        if(innerHeight < 500 && innerWidth < 1001) this._questionTextStyle.fontSize = 70 * this._localScale;
+
+        // Update container size and position
         this._rectSize = {
-            width: 300 * this._localScale,
-            height: 100 * this._localScale
+            width: 450 * answerContainerScale,
+            height: 210 * answerContainerScale
         };
-
-
 
        this.setPosition(innerWidth / 2, innerHeight / 2 );
 
         if(this.visible){
-            this._answersContainer.setScale(this._localScale).setPosition(this._config.layout === 'long' ? 0 : -innerWidth / 2 + this._answersContainerBackground.displayWidth * this._localScale, this._config.layout === 'long' ? -innerHeight / 5 : 0);
+            this._answersContainer.setScale(answerContainerScale);
+            // Reposition answer container
+            const answerContainerX = this._config.layout === 'long' ? 0 : -innerWidth / 1.7 + this._answersContainerBackground.displayWidth * this._localScale;
+            const answerContainerY = this._config.layout === 'long' ? -innerHeight / 5 : 0;
+            this._answersContainer.setPosition(answerContainerX, answerContainerY);
+
+
+
+            // Reset question objects
             this._resetQuestionObjects();
+
+
+            // Adjust question container position
+            this._questionContainer.y = this._config.layout === 'mini'
+            ? -this._questionContainer.getBounds().height / 2
+            : this._answersContainerBackground.getBounds().bottom - innerHeight / 2 + this._rectSize.height / 2;
+            
             this._drawQuestionTexts(this._config.value);
 
-            if(this._config.answers.length === 4){
-                const layout2 = {row: 2, column: 2, width: 300, height: 100, padding: 50};
-
-            
+            // Check if the layout is suitable for a 2x2 answer layout
+            if(this._config.answers.length === 4 ){
+                // Check if the answer container width exceeds the screen width
                 if( this._answersContainerBackground.displayWidth * this._localScale >= innerWidth){
-                    let answersClone = [...this._answersContainer.list];
-                    answersClone.shift();
-                
-                
-                    this._alignAnswers(answersClone as Answer[], layout2.row, layout2.column, layout2.width, layout2.height, layout2.padding);
-                    this._answersContainerBackground.setDisplaySize( (layout2.width + layout2.padding) * layout2.row, (layout2.height + layout2.padding) * layout2.column)
-
-                    this._questionContainer.setPosition(this._config.layout === 'long' ? 0 : innerWidth / 6, this._config.layout === 'long' ? 0 : -this._questionTextLinesCount * (this._rectSize.height / 2))
-
-                    if(this._data.answerBoxContent){
-                        this._data.answerBoxContent.setPosition((this._rect.x - this._answersContainer.x + this._questionContainer.x) / this._answersContainer.scale, (this._rect.y + Math.abs(this._answersContainer.y) + this._questionContainer.y) / this._answersContainer.scale);
-                        this._rect.setData('answer', this._data.answerBoxContent);
-                        if(this._data.isSubmitted)this.checkAndSubmit(true);
-                        
-                    }
+                    const layout2 = {row: 2, column: 2, width: this._initialSize.width, height: this._initialSize.height, padding: this._answerItemsPadding};
+                    this._changeAnswersLayout(layout2);
                 }
 
                 
