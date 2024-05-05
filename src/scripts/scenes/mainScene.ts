@@ -21,6 +21,7 @@ export default class MainScene extends Phaser.Scene{
     private _questions: Question[] = [];
 
     private _fullScreenButton!: Phaser.GameObjects.Image;
+    private _soundButton!: Phaser.GameObjects.Image;
     private _playAgainButton!: Phaser.GameObjects.Image;
 
     constructor(gameData: Entities.GameData){
@@ -49,6 +50,7 @@ export default class MainScene extends Phaser.Scene{
        
         this._changeQuestion();
         this._createFullScreenButton();
+        this._createSoundButton();
         this._createPlayAgainButton();
 
         this.onScreenChange();
@@ -87,6 +89,18 @@ export default class MainScene extends Phaser.Scene{
         .setInteractive({cursor: 'pointer'})
         .on('pointerdown', () => {
             toggleFullScreen();
+        });
+    }
+
+    private _createSoundButton(): void{
+        this._soundButton = this.add
+        .image((this._fullScreenButton?.getBounds().left ?? innerWidth) - 20, innerHeight - 10, Configs.soundButton.texture.enabled)
+        .setDisplaySize(10, 10)
+        .setOrigin(Configs.soundButton.origin.x, Configs.soundButton.origin.y)
+        .setInteractive({cursor: 'pointer'})
+        .on('pointerdown', () => {
+            this.sound.setMute(!this.sound.mute);
+            this._soundButton.setTexture(Configs.soundButton.texture[this.sound.mute ? 'disabled' : 'enabled']);
         });
     }
 
@@ -176,6 +190,7 @@ export default class MainScene extends Phaser.Scene{
         const buttonScale: number = innerWidth < 1001 ? 0.7 : innerWidth > 1920 ? innerWidth / 1920 : 1;
 
         this._fullScreenButton?.setScale(buttonScale)?.setPosition(innerWidth - 10 * buttonScale, innerHeight - 10 * buttonScale);
+        this._soundButton?.setDisplaySize(Configs.soundButton.width * buttonScale, Configs.soundButton.height * buttonScale).setPosition((this._fullScreenButton?.getBounds().left ?? innerWidth) - 20 * buttonScale, innerHeight - 10 * buttonScale);
         this._playAgainButton.setDisplaySize(50 * buttonScale, 50 * buttonScale).setPosition(10 * buttonScale, innerHeight - 10 * buttonScale);
 
         this._paginator.onScreenChange();

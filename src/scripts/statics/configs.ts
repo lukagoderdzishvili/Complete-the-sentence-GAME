@@ -66,6 +66,16 @@ export default class Configs{
         texture: 'fullscreen'
     }
 
+    static soundButton: Entities.SoundButtonConfig = {
+        width: 46,
+        height: 46,
+        origin: {x: 1, y: 1},
+        texture: {
+            enabled: 'sound-enabled',
+            disabled: 'sound-disabled'
+        }
+    }
+
     static playAgainButton: Entities.PlayAgainButtonConfig = {
         width: 50,
         height: 50,

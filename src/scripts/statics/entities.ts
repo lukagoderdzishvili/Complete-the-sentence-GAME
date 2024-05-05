@@ -35,6 +35,15 @@ export interface FullScreenButtonConfig {
     origin: {x: number, y: number};
     texture: string;
 }
+export interface SoundButtonConfig {
+    width: number;
+    height: number;
+    origin: {x: number, y: number};
+    texture: {
+        enabled: string;
+        disabled: string;
+    };
+}
 
 export interface  PlayAgainButtonConfig {
     width: number;

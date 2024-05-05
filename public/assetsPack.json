@@ -26,6 +26,18 @@
             },
 
             {
+                "url": "assets/images/sound-enabled.webp",
+                "type": "image", 
+                "key": "sound-enabled"
+            },
+
+            {
+                "url": "assets/images/sound-disabled.webp",
+                "type": "image", 
+                "key": "sound-disabled"
+            },
+
+            {
                 "url": "assets/images/playagain.png",
                 "type": "image", 
                 "key": "playagain"
