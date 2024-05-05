@@ -7,13 +7,12 @@ export default class PreloadScene extends Phaser.Scene {
 
     public preload(): void {
         this.load.pack("asset-pack", "/assetsPack.json");
-        this.load.pack('theme2', `/${this._theme}.json`);
+        this.load.pack('theme', `/${this._theme}.json`);
         
-        this._loadFont("opensans-extrabold", "assets/fonts/opensans-extrabold.woff2");
-        this._loadFont("opensans-regular", "assets/fonts/opensans-regular.woff2");
-        this._loadFont("opensans-semibold", "assets/fonts/opensans-semibold.woff2");
-        this._loadFont("teko-semibold", "assets/fonts/teko-semibold.woff2");
-        this._loadFont("rubik", "assets/fonts/hebrew/rubik-bold.woff2");
+        this._loadFont("poppins", "assets/fonts/Poppins-Medium.ttf");
+        this._loadFont("comic", "assets/fonts/ComicNeue-Bold.ttf");
+        this._loadFont("opensans", "assets/fonts/opensans-semibold.woff2");
+        this._loadFont("rubik", "assets/fonts/rubik-bold.woff2");
 
         this.load.html('finishDialog', 'partials/finishDialog.html');
 
@@ -33,7 +32,7 @@ export default class PreloadScene extends Phaser.Scene {
 
     public complete(): void {
         document.getElementById('loader')?.remove();        
-        this.scene.start('MainScene');
+        this.scene.start('StartScene');
         window.dispatchEvent(new Event('resize'));
     }
 }

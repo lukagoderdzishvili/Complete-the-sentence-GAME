@@ -33,10 +33,7 @@ export interface FullScreenButtonConfig {
     width: number;
     height: number;
     origin: {x: number, y: number};
-    texture: {
-        active: string
-        defualt: string
-    };
+    texture: string;
 }
 
 export interface  PlayAgainButtonConfig {

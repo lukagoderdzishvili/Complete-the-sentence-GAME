@@ -14,9 +14,15 @@
             },
 
             {
-                "url": "assets/images/fullscreen1.png",
+                "url": "assets/images/fullscreen-white.png",
                 "type": "image", 
-                "key": "fullscreen"
+                "key": "fullscreen-white"
+            },
+
+            {
+                "url": "assets/images/fullscreen-black.png",
+                "type": "image", 
+                "key": "fullscreen-black"
             },
 
             {
@@ -33,9 +39,14 @@
             },
 
             {
-                "url": "assets/images/next.svg",
+                "url": "assets/images/next-white.png",
                 "type": "image", 
-                "key": "next"
+                "key": "next-white"
+            },
+            {
+                "url": "assets/images/next-black.png",
+                "type": "image", 
+                "key": "next-black"
             },
 
             {
@@ -54,6 +65,36 @@
                 "url": "assets/sounds/background.mp3",
                 "type": "audio", 
                 "key": "backgroundMusic"
+            },
+            {
+                "url": "assets/sounds/click.mp3",
+                "type": "audio", 
+                "key": "clickSound"
+            },
+            {
+                "url": "assets/sounds/drop.mp3",
+                "type": "audio", 
+                "key": "dropSound"
+            },
+            {
+                "url": "assets/sounds/fail.mp3",
+                "type": "audio", 
+                "key": "failSound"
+            },
+            {
+                "url": "assets/sounds/game-restart.mp3",
+                "type": "audio", 
+                "key": "gameRestartSound"
+            },
+            {
+                "url": "assets/sounds/pickup.mp3",
+                "type": "audio", 
+                "key": "pickupSound"
+            },
+            {
+                "url": "assets/sounds/success.mp3",
+                "type": "audio", 
+                "key": "successSound"
             }
 
         ]

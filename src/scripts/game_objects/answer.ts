@@ -1,7 +1,10 @@
+import { AudioManager } from '../audioManager';
+import Configs from '../statics/configs';
 import * as Entities from '../statics/entities';
 
 export class Answer extends Phaser.GameObjects.Container{
     private _scene: Phaser.Scene;
+    private _audioManager: AudioManager;
     private _config: Entities.AnswerConfig;
     private _background!: Phaser.GameObjects.Image;
     private _text!: Phaser.GameObjects.Text;
@@ -14,6 +17,7 @@ export class Answer extends Phaser.GameObjects.Container{
 
     constructor(
         scene: Phaser.Scene,
+        audioManager: AudioManager,
         config: Entities.AnswerConfig, 
         answerRect: Phaser.GameObjects.Image, 
         getParentLocalScale: () => number,
@@ -22,6 +26,7 @@ export class Answer extends Phaser.GameObjects.Container{
         super(scene, config.position.x, config.position.y);
             
         this._scene = scene;
+        this._audioManager = audioManager;
         this._config = config;
         this._answerRect = answerRect;
         this._getParentLocalScale = getParentLocalScale;
@@ -43,7 +48,7 @@ export class Answer extends Phaser.GameObjects.Container{
 
 
         // Create and configure the text for the answer container
-        this._text = this._scene.add.text(0, 0, this._config.value, {fontSize: 60, fontFamily: 'rubik', color: '#000000', align: 'center'}).setOrigin(0.5, 0.5);
+        this._text = this._scene.add.text(0, 0, this._config.value, {fontSize: 60, fontFamily: Configs.fontFamily, color: Configs.answersTextColor, align: 'center'}).setOrigin(0.5, 0.5);
         if(this._text.displayWidth > this._config.size.width) this._text.setFontSize(50 * (this._config.size.width / this._text.displayWidth));
         if(this._text.displayHeight > this._config.size.height)this._text.setFontSize(30 * (this._config.size.height / this._text.displayHeight));
         this.add(this._text);// Add the text to the container
@@ -74,6 +79,7 @@ export class Answer extends Phaser.GameObjects.Container{
         this._background.on('dragstart', (_pointer: Phaser.Input.Pointer, _dragX: number, _dragY: number) => {
             this._dragStartPosition = new Phaser.Math.Vector2(this.x, this.y);// Store the initial position of the drag
             this.parentContainer.bringToTop(this);// Bring the container to the top of the display hierarchy
+            this._audioManager.pickup.play();
         });
 
         this._background.on('drag', (_pointer: Phaser.Input.Pointer, dragX: number, dragY: number) => {
@@ -105,6 +111,7 @@ export class Answer extends Phaser.GameObjects.Container{
 
                 this._changeAnswerBoxStateCallBack(this);
                 // snap the container to the answer rectangle's position
+                this._audioManager.drop.play();
                 this._moveAnimation(this, {x: this.x, y: this.y}, () => {return {x: (this._answerRect.x - this.parentContainer.x + this._answerRect.parentContainer.x) / this.parentContainer.scale, y: (this._answerRect.y + Math.abs(this.parentContainer.y) + this._answerRect.parentContainer.y) / this.parentContainer.scale}});
                 
             } else {

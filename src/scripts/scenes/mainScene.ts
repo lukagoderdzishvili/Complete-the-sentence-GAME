@@ -26,6 +26,8 @@ export default class MainScene extends Phaser.Scene{
     constructor(gameData: Entities.GameData){
         super({ key: 'MainScene' });
         this._gameData = gameData;
+
+        if(Configs.shuffleQuestions)this._shuffleQuestions();
     }   
 
 
@@ -38,7 +40,7 @@ export default class MainScene extends Phaser.Scene{
         this._timer = new Timer(this);
         this._audioManager.backgroundMusic.play();
         
-        this._paginator = new Paginator(this, this._changeQuestion, this._gameData.list.length);
+        this._paginator = new Paginator(this, this._audioManager, this._changeQuestion, this._gameData.list.length);
         this._correctAnswerCounter = new CorrectAnswerCounter(this);
         
         
@@ -52,9 +54,14 @@ export default class MainScene extends Phaser.Scene{
         this.onScreenChange();
     }
 
+    private _shuffleQuestions(): void{
+        this._gameData.list = Phaser.Utils.Array.Shuffle(this._gameData.list);
+
+    }
+
     private _createQuestions(): void{
         this._gameData.list.forEach((data) => {
-            const question = new Question(this, data).setVisible(false);
+            const question = new Question(this, this._audioManager, data).setVisible(false);
             this._questions.push(question);
         });
     }
@@ -71,8 +78,10 @@ export default class MainScene extends Phaser.Scene{
     }
 
     public _createFullScreenButton(): void{
+        if(/iPad|iPhone|iPod/.test(navigator.userAgent) && !(<any>window).MSStream)return; //iOS DOES NOT SUPPORT FULLSCREEN
+
         this._fullScreenButton = this.add
-        .image(innerWidth - 10, innerHeight - 10, Configs.fullScreenButton.texture.defualt)
+        .image(innerWidth - 10, innerHeight - 10, Configs.fullScreenButton.texture + '-' + Configs.uiComponentsColor)
         .setDisplaySize(Configs.fullScreenButton.width, Configs.fullScreenButton.height)
         .setOrigin(Configs.fullScreenButton.origin.x, Configs.fullScreenButton.origin.y)
         .setInteractive({cursor: 'pointer'})
@@ -88,13 +97,14 @@ export default class MainScene extends Phaser.Scene{
         .setOrigin(Configs.playAgainButton.origin.x, Configs.playAgainButton.origin.y)
         .setInteractive({cursor: 'pointer'})
         .on('pointerdown', () => {
+            this._audioManager.gameRestart.play();
             this._resetGame(); 
         });
     }
 
     private async _submitAnswer(): Promise<void>{
         if(this._questions[this._paginator.currentPage - 1].isSubmitted) return;
-        let isCorrect: boolean =  await this._questions[this._paginator.currentPage - 1].checkAndSubmit();
+        let isCorrect: boolean =  await this._questions[this._paginator.currentPage - 1].submit();
         
         if(isCorrect) this._increaseCorrectAnswerText();
 
@@ -148,6 +158,8 @@ export default class MainScene extends Phaser.Scene{
         this._createQuestions();
         this._paginator.reset();
         this._changeQuestion();
+        
+        if(Configs.shuffleQuestions)this._shuffleQuestions();
 
         this.onScreenChange();
     }
@@ -163,11 +175,11 @@ export default class MainScene extends Phaser.Scene{
 
         const buttonScale: number = innerWidth < 1001 ? 0.7 : innerWidth > 1920 ? innerWidth / 1920 : 1;
 
-        this._fullScreenButton.setScale(buttonScale).setPosition(innerWidth - 10 * buttonScale, innerHeight - 10 * buttonScale);
+        this._fullScreenButton?.setScale(buttonScale)?.setPosition(innerWidth - 10 * buttonScale, innerHeight - 10 * buttonScale);
         this._playAgainButton.setDisplaySize(50 * buttonScale, 50 * buttonScale).setPosition(10 * buttonScale, innerHeight - 10 * buttonScale);
 
         this._paginator.onScreenChange();
-        this._submitButton.setPosition(innerWidth / 2, innerHeight - 30).setScale(Math.max(0.5, buttonScale));
+        this._submitButton.setPosition(innerWidth / 2, innerHeight - Math.max(30, Configs.webScale * 40)).setScale(Math.max(0.5, buttonScale));
 
         this._questions.forEach(question => {
             question.onScreenChange();

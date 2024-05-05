@@ -1,3 +1,5 @@
+import Configs from "../statics/configs";
+
 export class FinishDialog extends Phaser.GameObjects.DOMElement{
     private _playAgainButton!: HTMLElement | null;
     private _timeElement!: HTMLElement | null;

@@ -1,0 +1,10 @@
+{
+    "data": {
+        "theme": "theme1",
+        "font": "rubik",
+        "shuffleQuestions": false,
+        "questionsTextColor": "white",
+        "answersTextColor": "black",
+        "UIComponentsColor": "white"
+    }
+}

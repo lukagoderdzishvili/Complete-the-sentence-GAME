@@ -1,3 +1,5 @@
+import Configs from "../statics/configs";
+
 export class Timer extends Phaser.GameObjects.Container{
     private _scene: Phaser.Scene;
 
@@ -15,7 +17,8 @@ export class Timer extends Phaser.GameObjects.Container{
 
 
     private _create(): void{
-        this._text = this._scene.add.text(0, 0, this._formatTime(this._initialTime), {fontFamily: 'rubik', fontSize: 40}).setOrigin(0, 0);
+        this._text = this._scene.add.text(0, 0, this._formatTime(this._initialTime), Configs.timer.textStyle)
+        .setOrigin(Configs.timer.origin.x, Configs.timer.origin.y);
         
         this.add(this._text);
         // Each 1000 ms call onEvent

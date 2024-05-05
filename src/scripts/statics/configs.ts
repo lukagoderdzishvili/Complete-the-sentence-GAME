@@ -44,6 +44,12 @@ export default class Configs{
         //}         
     };
 
+    static fontFamily: string = 'opensans';
+    static shuffleQuestions: boolean = false;
+    static questionsTextColor: 'white' | 'black' = 'white';
+    static answersTextColor: 'white' | 'black' = 'black';
+    static uiComponentsColor: 'white' | 'black' = 'white';
+
     static webScale: number = Math.min(innerWidth / 1920, innerHeight / 1080);
     static mobileScale: number = Math.min((innerWidth / 1200), innerHeight / 800) ;
 
@@ -57,10 +63,7 @@ export default class Configs{
         width: 44,
         height: 44,
         origin: {x: 1, y: 1},
-        texture: {
-            active: 'fullscreen',
-            defualt: 'fullscreen'
-        } 
+        texture: 'fullscreen'
     }
 
     static playAgainButton: Entities.PlayAgainButtonConfig = {
@@ -73,11 +76,11 @@ export default class Configs{
 
     static paginator: Entities.PaginatorConfig = {
         button: {
-            width: 44,
-            height: 44,
+            width: 24,
+            height: 24,
             texture: 'next'
         },
-        textStyle: {fontFamily: 'opensans-regular', fontSize: 20}
+        textStyle: {fontFamily: 'rubik', fontSize: 20}
     }
 
     static correctAnswerCounter: Entities.CorrectAnswerCounterConfig = {

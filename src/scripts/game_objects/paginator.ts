@@ -1,7 +1,9 @@
+import { AudioManager } from "../audioManager";
 import Configs from "../statics/configs";
 
 export class Paginator extends Phaser.GameObjects.Container{
     private _scene: Phaser.Scene;
+    private _audioManager: AudioManager;
     private _previousButton!: Phaser.GameObjects.Image;
     private _nextButton!: Phaser.GameObjects.Image;
     private _text!: Phaser.GameObjects.Text;
@@ -10,10 +12,11 @@ export class Paginator extends Phaser.GameObjects.Container{
     private _currentPage: number = 1;
     private _changeCallBack: () => void;
 
-    constructor(scene: Phaser.Scene, changeCallback: () => void, countPage: number){
+    constructor(scene: Phaser.Scene, audioManager: AudioManager, changeCallback: () => void, countPage: number){
         super(scene, innerWidth / 2, 30);
         scene.add.existing(this);
         this._scene = scene;
+        this._audioManager = audioManager;
         this._changeCallBack = changeCallback;
         this._countPage = countPage;
         
@@ -26,12 +29,12 @@ export class Paginator extends Phaser.GameObjects.Container{
     private _draw(): void{
         //BUTTONS
         this._nextButton = this._scene.add
-            .image(76, 0, Configs.paginator.button.texture)
+            .image(76, 0, Configs.paginator.button.texture + '-' + Configs.uiComponentsColor)
             .setDisplaySize(Configs.paginator.button.width, Configs.paginator.button.height)
             .setInteractive({cursor: 'pointer'});
 
         this._previousButton = this._scene.add
-            .image(-76, 0, Configs.paginator.button.texture)
+            .image(-76, 0, Configs.paginator.button.texture + '-' + Configs.uiComponentsColor)
             .setDisplaySize(Configs.paginator.button.width, Configs.paginator.button.height)
             .setInteractive({cursor: 'pointer'})
             .setRotation(Phaser.Math.DEG_TO_RAD * 180);
@@ -47,9 +50,15 @@ export class Paginator extends Phaser.GameObjects.Container{
     }
 
     private _addEvents(): void{
-        this._nextButton.on('pointerdown', () => { this.nextPage()});
+        this._nextButton.on('pointerdown', () => { 
+            this._audioManager.click.play();
+            this.nextPage();
+        });
 
-        this._previousButton.on('pointerdown', () => { this.previusPage()});
+        this._previousButton.on('pointerdown', () => { 
+            this._audioManager.click.play();
+            this.previusPage();
+        });
     }
 
     private _checkState(): void{
