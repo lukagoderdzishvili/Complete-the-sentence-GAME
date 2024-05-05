@@ -244,6 +244,14 @@ export class Question extends Phaser.GameObjects.Container {
                 yoyo: true,
                 ease: Phaser.Math.Easing.Quadratic.In,
                 completeDelay: 250,
+                onStart: () => {
+                    const answers = [...this._answersContainer.list].filter(item => item instanceof Answer && item.valueText !== this._rect.getData('answer')?.valueText);
+                    this._scene.tweens.add({
+                        targets: answers,
+                        alpha: 0.5,
+                        duration: 250,
+                    });
+                },
                 onComplete: () => {
                     return resolve(isCorrect);
                 }
