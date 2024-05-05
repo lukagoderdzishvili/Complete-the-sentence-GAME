@@ -113,7 +113,9 @@ export default class Configs{
 
     static timer: Entities.TimerConfig = {
         textStyle: {fontFamily: 'rubik', fontSize: 40},
-        origin: {x: 0, y: 0}
+        origin: {x: 0, y: 0},
+        initialTime: 0,
+        isCountDown: false
     }
 
     static onScreenChange(): void{

@@ -83,4 +83,6 @@ export interface CorrectAnswerCounterConfig {
 export interface TimerConfig {
     textStyle: Phaser.Types.GameObjects.Text.TextStyle;
     origin: {x: number, y: number};
+    initialTime: number,
+    isCountDown: boolean
 }

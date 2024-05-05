@@ -32,6 +32,9 @@ export default class Game {
 
     private _setConfigFromJSON(): void{
         Configs.fontFamily = settings.data.font;
+        Configs.timer.initialTime = +settings.data.timer.intialTime;
+        Configs.timer.isCountDown = settings.data.timer.isCountDown;
+        
         Configs.shuffleQuestions = settings.data.shuffleQuestions;
         if(
             settings.data.UIComponentsColor === 'white' ||

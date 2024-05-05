@@ -45,7 +45,7 @@ export default class MainScene extends Phaser.Scene{
         this._paginator = new Paginator(this, this._audioManager, this._changeQuestion, this._gameData.list.length);
         this._correctAnswerCounter = new CorrectAnswerCounter(this);
         
-        
+        this._addEvents();
         this._createQuestions();
         this._createSubmitButton();
        
@@ -56,6 +56,10 @@ export default class MainScene extends Phaser.Scene{
         this._createPlayAgainButton();
 
         this.onScreenChange();
+    }
+
+    private _addEvents(): void{
+        this.events.on('FinishGame', this._finishGame, this);
     }
 
     private _shuffleQuestions(): void{
@@ -156,7 +160,7 @@ export default class MainScene extends Phaser.Scene{
 
     private _finishGame(): void{
         this._timer.pause();
-        this._finishDialog = new FinishDialog(this, this._correctAnswerCounter.text, this._questions.length, this._timer.value, false, this._resetGame);
+        this._finishDialog = new FinishDialog(this, this._correctAnswerCounter.text, this._questions.length, this._timer.value, this._resetGame);
     }
 
     private _increaseCorrectAnswerText(): void{

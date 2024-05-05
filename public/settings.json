@@ -2,6 +2,7 @@
     "data": {
         "theme": "theme1",
         "font": "rubik",
+        "timer": { "intialTime": "300", "isCountDown": true},
         "shuffleQuestions": false,
         "questionsTextColor": "white",
         "answersTextColor": "black",

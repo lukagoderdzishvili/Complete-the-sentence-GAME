@@ -3,7 +3,8 @@ import Configs from "../statics/configs";
 export class Timer extends Phaser.GameObjects.Container{
     private _scene: Phaser.Scene;
 
-    private _initialTime: number = 0;
+    private _initialTime: number = Configs.timer.initialTime;
+    private _isCountDown: boolean = Configs.timer.isCountDown;
     private _text!: Phaser.GameObjects.Text;
     private _timerEvent!: Phaser.Time.TimerEvent;
 
@@ -40,7 +41,18 @@ export class Timer extends Phaser.GameObjects.Container{
     
     
     private  _onEvent(): void{
-        this._initialTime += 1; // One second
+        if(this._isCountDown){
+            if(this._initialTime <= 0 ) {
+                this._timerEvent.destroy();
+                this._scene.events.emit('FinishGame');
+                return;
+            }
+
+            this._initialTime -= 1;
+        }else{
+            this._initialTime += 1; 
+        }
+
         this._text.setText(this._formatTime(this._initialTime));
     }
 
@@ -52,7 +64,7 @@ export class Timer extends Phaser.GameObjects.Container{
         this._timerEvent.destroy();
         this._text.destroy();
 
-        this._initialTime = 0;
+        this._initialTime = Configs.timer.initialTime;
         this._create();
     }
 
