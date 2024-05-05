@@ -1,3 +1,5 @@
+import Configs from "../statics/configs";
+
 export class CorrectAnswerCounter extends Phaser.GameObjects.Container{
     private _scene: Phaser.Scene;
     private _text!: Phaser.GameObjects.Text;
@@ -12,11 +14,16 @@ export class CorrectAnswerCounter extends Phaser.GameObjects.Container{
     }
 
     private _create(): void{
-        this._text = this._scene.add.text(0, 0, '0', {fontFamily: 'rubik', fontSize: 40, color: '#FFFFFF'}).setResolution(2);
-        this._text.x -= this._text.displayWidth / 2;
-        this._text.y -= this._text.displayHeight / 2;
+        this._text = this._scene.add
+            .text(0, 0, Configs.correctAnswerCounter.textIntialValue, Configs.correctAnswerCounter.textStyle)
+            .setOrigin(0.5, 0.5)
+            .setResolution(2);
 
-        this._icon =  this._scene.add.image(-this._text.displayWidth - 10, 0, 'checkmark').setDisplaySize(30, 32);
+        this._icon =  this._scene.add
+            .image(-this._text.displayWidth - 10, 0, Configs.correctAnswerCounter.icon.texture)
+            .setDisplaySize(Configs.correctAnswerCounter.icon.width, Configs.correctAnswerCounter.icon.height);
+        
+        
         this.add([this._text, this._icon])
     }
 
@@ -35,7 +42,8 @@ export class CorrectAnswerCounter extends Phaser.GameObjects.Container{
 
     public onScreenChange(): void{
         const scale: number = innerWidth < 1001 ? 0.7 : innerWidth > 1920 ? innerWidth / 1920 : 1;
-        this.setPosition(innerWidth - 30 * scale, 32 * scale).setScale(scale);
+        this.setPosition(innerWidth - Configs.correctAnswerCounter.icon.width * scale, Configs.correctAnswerCounter.icon.height  * scale)
+            .setScale(scale);
         
     }
 

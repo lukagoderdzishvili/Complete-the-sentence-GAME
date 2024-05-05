@@ -8,6 +8,7 @@ export default class PreloadScene extends Phaser.Scene {
     public preload(): void {
         this.load.pack("asset-pack", "/assetsPack.json");
         this.load.pack('theme2', `/${this._theme}.json`);
+        
         this._loadFont("opensans-extrabold", "assets/fonts/opensans-extrabold.woff2");
         this._loadFont("opensans-regular", "assets/fonts/opensans-regular.woff2");
         this._loadFont("opensans-semibold", "assets/fonts/opensans-semibold.woff2");

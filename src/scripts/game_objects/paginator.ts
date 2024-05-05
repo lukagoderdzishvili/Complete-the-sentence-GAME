@@ -1,3 +1,5 @@
+import Configs from "../statics/configs";
+
 export class Paginator extends Phaser.GameObjects.Container{
     private _scene: Phaser.Scene;
     private _previousButton!: Phaser.GameObjects.Image;
@@ -23,17 +25,25 @@ export class Paginator extends Phaser.GameObjects.Container{
 
     private _draw(): void{
         //BUTTONS
-        this._nextButton = this._scene.add.image(76, 0, 'next').setInteractive({cursor: 'pointer'});
-        this._previousButton = this._scene.add.image(-76, 0, 'next').setRotation(Phaser.Math.DEG_TO_RAD * 180);
-        this.add([this._previousButton, this._nextButton]);
+        this._nextButton = this._scene.add
+            .image(76, 0, Configs.paginator.button.texture)
+            .setDisplaySize(Configs.paginator.button.width, Configs.paginator.button.height)
+            .setInteractive({cursor: 'pointer'});
+
+        this._previousButton = this._scene.add
+            .image(-76, 0, Configs.paginator.button.texture)
+            .setDisplaySize(Configs.paginator.button.width, Configs.paginator.button.height)
+            .setInteractive({cursor: 'pointer'})
+            .setRotation(Phaser.Math.DEG_TO_RAD * 180);
 
 
         //TEXT
-        this._text = this._scene.add.text(0, 0, `${this._currentPage} of ${this._countPage}`, {fontFamily: 'opensans-regular', fontSize: 20});
+        this._text = this._scene.add.text(0, 0, `${this._currentPage} of ${this._countPage}`, Configs.paginator.textStyle);
         this._text.x -= this._text.displayWidth / 2;
         this._text.y -= this._text.displayHeight / 2;
 
-        this.add(this._text);
+
+        this.add([this._previousButton, this._nextButton, this._text]);
     }
 
     private _addEvents(): void{

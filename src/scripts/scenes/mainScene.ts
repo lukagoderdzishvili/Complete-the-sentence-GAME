@@ -61,8 +61,8 @@ export default class MainScene extends Phaser.Scene{
 
     private _createSubmitButton(): void{
         this._submitButton = this.add
-        .image(innerWidth / 2, innerHeight - 40, 'submitButton')
-        .setDisplaySize(250, 60)
+        .image(innerWidth / 2, innerHeight - 40, Configs.submitButton.texture)
+        .setDisplaySize(Configs.submitButton.width, Configs.submitButton.height)
         .setInteractive({cursor: 'pointer'})
         .on('pointerdown', () => {
             this._submitButton.setAlpha(0.5);
@@ -72,9 +72,9 @@ export default class MainScene extends Phaser.Scene{
 
     public _createFullScreenButton(): void{
         this._fullScreenButton = this.add
-        .image(innerWidth - 10, innerHeight - 10, 'fullscreen')
-        .setDisplaySize(44, 44)
-        .setOrigin(1, 1)
+        .image(innerWidth - 10, innerHeight - 10, Configs.fullScreenButton.texture.defualt)
+        .setDisplaySize(Configs.fullScreenButton.width, Configs.fullScreenButton.height)
+        .setOrigin(Configs.fullScreenButton.origin.x, Configs.fullScreenButton.origin.y)
         .setInteractive({cursor: 'pointer'})
         .on('pointerdown', () => {
             toggleFullScreen();
@@ -83,9 +83,9 @@ export default class MainScene extends Phaser.Scene{
 
     private _createPlayAgainButton(): void{
         this._playAgainButton = this.add
-        .image(10, innerHeight - 10, 'playagain')
-        .setDisplaySize(50, 50)
-        .setOrigin(0, 1)
+        .image(10, innerHeight - 10, Configs.playAgainButton.texture)
+        .setDisplaySize(Configs.playAgainButton.width, Configs.playAgainButton.height)
+        .setOrigin(Configs.playAgainButton.origin.x, Configs.playAgainButton.origin.y)
         .setInteractive({cursor: 'pointer'})
         .on('pointerdown', () => {
             this._resetGame(); 
@@ -136,8 +136,6 @@ export default class MainScene extends Phaser.Scene{
         }else{
             this._submitButton.setInteractive({cursor: 'pointer'}).setAlpha(1);
         }
-
-        console.log('QUESTION SUBMITTED =  ' + Boolean(this._questions[this._paginator.currentPage - 1]?.isSubmitted))
     }
 
     private _resetGame = (): void => {
@@ -164,6 +162,7 @@ export default class MainScene extends Phaser.Scene{
         this._correctAnswerCounter.onScreenChange();
 
         const buttonScale: number = innerWidth < 1001 ? 0.7 : innerWidth > 1920 ? innerWidth / 1920 : 1;
+
         this._fullScreenButton.setScale(buttonScale).setPosition(innerWidth - 10 * buttonScale, innerHeight - 10 * buttonScale);
         this._playAgainButton.setDisplaySize(50 * buttonScale, 50 * buttonScale).setPosition(10 * buttonScale, innerHeight - 10 * buttonScale);
 

@@ -45,12 +45,6 @@ export class Question extends Phaser.GameObjects.Container {
         this._drawAnswerContainer();
         this._switchLayout(this._config.layout);
 
-        // setInterval(() => {
-        //     this._config.layout = this._config.layout === 'mini' ? 'long' : 'mini';
-        //     this._switchLayout(this._config.layout);
-        //     this.onScreenChange();
-        // }, 3000)
-
         window.dispatchEvent(new Event('resize'));
     }
 
@@ -207,8 +201,7 @@ export class Question extends Phaser.GameObjects.Container {
     // Create the background image for the answers container
     private _createContainerBackground(size: { width: number, height: number }): Phaser.GameObjects.Image {
         return this._scene.add.image(0, 0, 'targetArea')
-            .setDisplaySize(size.width, size.height)
-            //.setAlpha(0.5);
+            .setDisplaySize(size.width, size.height);
     }
 
     private _lock(): void{
