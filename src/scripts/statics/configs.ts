@@ -76,6 +76,13 @@ export default class Configs{
         }
     }
 
+    static layoutSwitchButton: Entities.FullScreenButtonConfig = {
+        width: 50,
+        height: 50,
+        origin: {x: 0.5, y: 0.5},
+        texture: 'layout-switch'
+    }
+
     static playAgainButton: Entities.PlayAgainButtonConfig = {
         width: 50,
         height: 50,

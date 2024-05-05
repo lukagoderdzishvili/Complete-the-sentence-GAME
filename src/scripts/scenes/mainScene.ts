@@ -22,6 +22,7 @@ export default class MainScene extends Phaser.Scene{
 
     private _fullScreenButton!: Phaser.GameObjects.Image;
     private _soundButton!: Phaser.GameObjects.Image;
+    private _layoutSwitchButton!: Phaser.GameObjects.Image;
     private _playAgainButton!: Phaser.GameObjects.Image;
 
     constructor(gameData: Entities.GameData){
@@ -51,6 +52,7 @@ export default class MainScene extends Phaser.Scene{
         this._changeQuestion();
         this._createFullScreenButton();
         this._createSoundButton();
+        this._createLayoutSwitchButton()
         this._createPlayAgainButton();
 
         this.onScreenChange();
@@ -101,6 +103,22 @@ export default class MainScene extends Phaser.Scene{
         .on('pointerdown', () => {
             this.sound.setMute(!this.sound.mute);
             this._soundButton.setTexture(Configs.soundButton.texture[this.sound.mute ? 'disabled' : 'enabled']);
+        });
+    }
+
+    private _createLayoutSwitchButton(): void{
+        this._layoutSwitchButton = this.add
+        .image(innerWidth - 10, innerHeight / 2, Configs.layoutSwitchButton.texture)
+        .setDisplaySize(Configs.layoutSwitchButton.width, Configs.layoutSwitchButton.height)
+        .setOrigin(Configs.layoutSwitchButton.origin.x, Configs.layoutSwitchButton.origin.y)
+        .setInteractive({cursor: 'pointer'})
+        .on('pointerdown', () => {
+            this._audioManager.click.play();
+            const question = this._questions.find((item) => item.visible);
+            if(question){
+                const currentLayout = question.switchLayout();
+                this._layoutSwitchButton.setRotation(currentLayout === 'column' ? 0 : Phaser.Math.DEG_TO_RAD * 90);
+            }
         });
     }
 
@@ -191,7 +209,8 @@ export default class MainScene extends Phaser.Scene{
 
         this._fullScreenButton?.setScale(buttonScale)?.setPosition(innerWidth - 10 * buttonScale, innerHeight - 10 * buttonScale);
         this._soundButton?.setDisplaySize(Configs.soundButton.width * buttonScale, Configs.soundButton.height * buttonScale).setPosition((this._fullScreenButton?.getBounds().left ?? innerWidth) - 20 * buttonScale, innerHeight - 10 * buttonScale);
-        this._playAgainButton.setDisplaySize(50 * buttonScale, 50 * buttonScale).setPosition(10 * buttonScale, innerHeight - 10 * buttonScale);
+        this._layoutSwitchButton.setDisplaySize(Configs.layoutSwitchButton.width * buttonScale, Configs.layoutSwitchButton.height * buttonScale).setPosition(innerWidth - 20 * buttonScale - Configs.layoutSwitchButton.width * buttonScale / 2, innerHeight / 2);
+        this._playAgainButton.setDisplaySize(Configs.playAgainButton.width * buttonScale, Configs.playAgainButton.height * buttonScale).setPosition(10 * buttonScale, innerHeight - 10 * buttonScale);
 
         this._paginator.onScreenChange();
         this._submitButton.setPosition(innerWidth / 2, innerHeight - Math.max(30, Configs.webScale * 40)).setScale(Math.max(0.5, buttonScale));

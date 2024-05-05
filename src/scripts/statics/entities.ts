@@ -45,6 +45,13 @@ export interface SoundButtonConfig {
     };
 }
 
+export interface LayoutSwitchButtonConfig {
+    width: number;
+    height: number;
+    origin: {x: number, y: number};
+    texture: string;
+}
+
 export interface  PlayAgainButtonConfig {
     width: number;
     height: number;

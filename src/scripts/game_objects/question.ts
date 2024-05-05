@@ -341,6 +341,13 @@ export class Question extends Phaser.GameObjects.Container {
         return Math.min(1, Math.min(answersScaleX, answersScaleY));
     }
 
+    public switchLayout(): string {
+        this._config.layout = this._config.layout === 'column' ? 'row' : 'column';
+        this._switchLayout(this._config.layout);
+        window.dispatchEvent(new Event('resize'));
+        return this._config.layout;
+    }
+
     public get isSubmitted(): boolean{
         return this._data.isSubmitted;
     }

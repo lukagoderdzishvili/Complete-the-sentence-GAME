@@ -38,6 +38,12 @@
             },
 
             {
+                "url": "assets/images/layout-switch.svg",
+                "type": "image", 
+                "key": "layout-switch"
+            },
+
+            {
                 "url": "assets/images/playagain.png",
                 "type": "image", 
                 "key": "playagain"
