@@ -2,7 +2,7 @@ export default class PreloadScene extends Phaser.Scene {
     private _theme: string
     constructor(theme: string) {
         super({ key: 'PreloadScene' });
-        this._theme = theme        
+        this._theme = theme;   
     }
 
     public preload(): void {
