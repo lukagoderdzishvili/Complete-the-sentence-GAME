@@ -15,4 +15,8 @@ A cloze activity where you drag and drop words into blank spaces within a text.
   npm install 
   npm run start
 ```
-    
+
+## Build Production Version
+```bash
+npm run build
+```
