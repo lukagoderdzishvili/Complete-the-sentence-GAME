@@ -171,7 +171,7 @@ export class Question extends Phaser.GameObjects.Container {
         const textures: string[] = ['letterBox1', 'letterBox2', 'letterBox3'];
         // Create and add answer items to the container
         this._config.answers.forEach((answer, index) => {
-            const answerConfig: AnswerConfig = {size: this._rectSize, position: {x: 0, y: 0}, value: answer , texture: textures[index % 2]};
+            const answerConfig: AnswerConfig = {size: this._rectSize, position: {x: 0, y: 0}, value: answer , texture: textures[index % 3]};
             const item = new Answer(this._scene, this._audioManager, answerConfig, this._rect, this._getLocalScale, this._changeAnswerBoxStateCallBack);
             this._answersContainer.add(item);
         });        

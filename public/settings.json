@@ -1,6 +1,6 @@
 {
     "data": {
-        "theme": "theme3",
+        "theme": "theme2",
         "font": "rubik",
         "timer": { "intialTime": "300", "isCountDown": true},
         "shuffleQuestions": false,
