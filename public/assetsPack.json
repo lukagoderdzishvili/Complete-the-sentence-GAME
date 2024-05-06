@@ -8,12 +8,6 @@
             },
 
             {
-                "url": "assets/images/answer-box.png",
-                "type": "image", 
-                "key": "answerBox"
-            },
-
-            {
                 "url": "assets/images/fullscreen-white.png",
                 "type": "image", 
                 "key": "fullscreen-white"
@@ -53,13 +47,6 @@
                 "url": "assets/images/playagain.png",
                 "type": "image", 
                 "key": "playagain"
-            },
-
-
-            {
-                "url": "assets/images/answers-container.png",
-                "type": "image", 
-                "key": "answersContainer"
             },
 
             {

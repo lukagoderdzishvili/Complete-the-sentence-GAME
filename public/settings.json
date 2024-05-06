@@ -6,6 +6,7 @@
         "shuffleQuestions": false,
         "questionsTextColor": "white",
         "answersTextColor": "white",
-        "UIComponentsColor": "white"
+        "UIComponentsColor": "white",
+        "initAnimation": "1"
     }
 }

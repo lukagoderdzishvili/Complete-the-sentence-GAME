@@ -49,6 +49,7 @@ export default class Configs{
     static questionsTextColor: 'white' | 'black' = 'white';
     static answersTextColor: 'white' | 'black' = 'black';
     static uiComponentsColor: 'white' | 'black' = 'white';
+    static initAnimation: "1" | "2" = "1";
 
     static webScale: number = Math.min(innerWidth / 1920, innerHeight / 1080);
     static mobileScale: number = Math.min((innerWidth / 1200), innerHeight / 800) ;

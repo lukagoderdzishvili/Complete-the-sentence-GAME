@@ -68,8 +68,8 @@ export default class MainScene extends Phaser.Scene{
     }
 
     private _createQuestions(): void{
-        this._gameData.list.forEach((data) => {
-            const question = new Question(this, this._audioManager, data).setVisible(false);
+        this._gameData.list.forEach((data, index) => {
+            const question = new Question(this, this._audioManager, data, index === 0).setVisible(false);
             this._questions.push(question);
         });
     }

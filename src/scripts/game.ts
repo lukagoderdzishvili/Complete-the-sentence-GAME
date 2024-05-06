@@ -36,6 +36,7 @@ export default class Game {
         Configs.timer.isCountDown = settings.data.timer.isCountDown;
         
         Configs.shuffleQuestions = settings.data.shuffleQuestions;
+        if(settings.data.initAnimation === "2")Configs.initAnimation = "2";
         if(
             settings.data.UIComponentsColor === 'white' ||
             settings.data.UIComponentsColor === 'black'     

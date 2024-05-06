@@ -27,6 +27,7 @@ export class Question extends Phaser.GameObjects.Container {
     private _localScale: number = Configs.webScale;
     private _row!: number;
     private _column!: number;
+    private _initAnimation: boolean;
     
     private _data: {
         answerBoxContent: Answer | undefined,
@@ -37,13 +38,13 @@ export class Question extends Phaser.GameObjects.Container {
     }
     
 
-    constructor(scene: Phaser.Scene, audioManager: AudioManager, config: QuestionConfig) {
+    constructor(scene: Phaser.Scene, audioManager: AudioManager, config: QuestionConfig, initAnimation: boolean) {
         super(scene, innerWidth / 2, innerHeight / 2);
         scene.add.existing(this);
         this._scene = scene;
         this._audioManager = audioManager;
         this._config = config;
-        
+        this._initAnimation = initAnimation;
 
         this._drawQuestionTexts( config.value );
         this._drawAnswerContainer();
@@ -173,16 +174,26 @@ export class Question extends Phaser.GameObjects.Container {
         this._config.answers.forEach((answer, index) => {
             const answerConfig: AnswerConfig = {size: this._rectSize, position: {x: 0, y: 0}, value: answer , texture: textures[index % 3]};
             const item = new Answer(this._scene, this._audioManager, answerConfig, this._rect, this._getLocalScale, this._changeAnswerBoxStateCallBack);
+            if(this._initAnimation){
+                item.setAlpha(0);
+                if(Configs.initAnimation === "1"){
+                    item.setScale(0.7);
+                }
+            }
             this._answersContainer.add(item);
         });        
         this._alignAnswers(this._answersContainer.list as Answer[], this._answersContainer.list.length, 1, this._rectSize.width, this._rectSize.height, this._answerItemsPadding);
-        
+
+        this._startInitAnimation();
+
         // Set up the background image for the container
         const containerBackgroundSize = { width: (this._rectSize.width + this._answerItemsPadding) * this._answersContainer.list.length, height: this._initialSize.height + this._answerItemsPadding };
         this._answersContainerBackground = this._createContainerBackground(containerBackgroundSize);
         this._answersContainer.add(this._answersContainerBackground);
         this._answersContainer.sendToBack(this._answersContainerBackground);
+
     }
+    
 
     private _alignAnswers(target: Answer[], row: number, column: number, cellWidth: number, cellHeight: number, padding: number): void{
         this._row = row;
@@ -219,6 +230,33 @@ export class Question extends Phaser.GameObjects.Container {
 
     private _changeAnswerBoxStateCallBack = (answer?: Answer): void => {
         this._data.answerBoxContent = answer;
+    }
+
+    public _startInitAnimation(): void{
+        if(Configs.initAnimation === "2"){
+            (<Answer[]>this._answersContainer.list).forEach((item, index) => {
+                this._scene.tweens.add({
+                    targets: item,
+                    duration: 250,
+                    y: '-=200',
+                    alpha: 1,
+                    delay: index * 250,
+                    onStart: () => {
+                        item.y = item.y + 200;
+                    }
+                })
+            });
+        }else{
+            this._answersContainer.list.forEach((item, index) => {
+                this._scene.tweens.add({
+                    targets: item,
+                    duration: 250,
+                    scale: 1,
+                    alpha: 1,
+                    delay: index * 250
+                })
+            });
+        }
     }
 
     public submit(force?: boolean): Promise<boolean>{
