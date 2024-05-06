@@ -3,7 +3,7 @@ import Configs from "../statics/configs";
 export class Timer extends Phaser.GameObjects.Container{
     private _scene: Phaser.Scene;
 
-    private _initialTime: number = Configs.timer.initialTime;
+    private _initialTime: number = 0;
     private _isCountDown: boolean = Configs.timer.isCountDown;
     private _text!: Phaser.GameObjects.Text;
     private _timerEvent!: Phaser.Time.TimerEvent;
@@ -18,7 +18,7 @@ export class Timer extends Phaser.GameObjects.Container{
 
 
     private _create(): void{
-        this._text = this._scene.add.text(0, 0, this._formatTime(this._initialTime), Configs.timer.textStyle)
+        this._text = this._scene.add.text(0, 0, this._formatTime(this._isCountDown ? Configs.timer.initialTime - this._initialTime : this._initialTime), Configs.timer.textStyle)
         .setOrigin(Configs.timer.origin.x, Configs.timer.origin.y);
         
         this.add(this._text);
@@ -41,19 +41,20 @@ export class Timer extends Phaser.GameObjects.Container{
     
     
     private  _onEvent(): void{
+        this._initialTime += 1;
         if(this._isCountDown){
-            if(this._initialTime <= 0 ) {
+            if(this._initialTime >= Configs.timer.initialTime ) {
                 this._timerEvent.destroy();
+                this._text.setText(this._formatTime(Configs.timer.initialTime - this._initialTime));
                 this._scene.events.emit('FinishGame');
                 return;
             }
+            
+            this._text.setText(this._formatTime(Configs.timer.initialTime - this._initialTime));
 
-            this._initialTime -= 1;
         }else{
-            this._initialTime += 1; 
+            this._text.setText(this._formatTime(this._initialTime));
         }
-
-        this._text.setText(this._formatTime(this._initialTime));
     }
 
     public pause(): void{
@@ -64,12 +65,12 @@ export class Timer extends Phaser.GameObjects.Container{
         this._timerEvent.destroy();
         this._text.destroy();
 
-        this._initialTime = Configs.timer.initialTime;
+        this._initialTime = 0;
         this._create();
     }
 
-    public get value(): string{
-        return this._text.text;
+    public get value(): number{
+        return this._initialTime;
     }
 
 

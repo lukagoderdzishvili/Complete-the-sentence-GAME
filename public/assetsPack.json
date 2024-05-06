@@ -38,9 +38,15 @@
             },
 
             {
-                "url": "assets/images/layout-switch.svg",
+                "url": "assets/images/layout-switch-black.svg",
                 "type": "image", 
-                "key": "layout-switch"
+                "key": "layout-switch-black"
+            },
+
+            {
+                "url": "assets/images/layout-switch-white.png",
+                "type": "image", 
+                "key": "layout-switch-white"
             },
 
             {

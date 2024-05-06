@@ -205,7 +205,7 @@ export class Question extends Phaser.GameObjects.Container {
 
     // Create the background image for the answers container
     private _createContainerBackground(size: { width: number, height: number }): Phaser.GameObjects.Image {
-        return this._scene.add.image(0, 0, 'targetArea')
+        return this._scene.add.image(0, 0, 'targetAreaBig')
             .setDisplaySize(size.width, size.height);
     }
 

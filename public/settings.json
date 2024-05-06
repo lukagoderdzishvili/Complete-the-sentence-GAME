@@ -1,11 +1,11 @@
 {
     "data": {
-        "theme": "theme1",
+        "theme": "theme3",
         "font": "rubik",
         "timer": { "intialTime": "300", "isCountDown": true},
         "shuffleQuestions": false,
         "questionsTextColor": "white",
-        "answersTextColor": "black",
+        "answersTextColor": "white",
         "UIComponentsColor": "white"
     }
 }

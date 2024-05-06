@@ -12,13 +12,13 @@ export class FinishDialog extends Phaser.GameObjects.DOMElement{
     private _timeValue: string;
     
 
-    constructor(scene: Phaser.Scene, answers: string, countAnswers: number, time: string, playAgainCallBack: () => void){
+    constructor(scene: Phaser.Scene, answers: string, countAnswers: number, time: number, playAgainCallBack: () => void){
         super(scene, 0, 0);
         scene.add.existing(this);
         this._answersValue = answers;
         this._countAnswersValue = countAnswers;
 
-        this._timeValue = Configs.timer.isCountDown ? this._formatTime(Configs.timer.initialTime) : time;
+        this._timeValue = this._formatTime(time);
         this._playAgainCallback = playAgainCallBack;
 
         this.createFromCache('finishDialog');

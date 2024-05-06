@@ -111,8 +111,9 @@ export default class MainScene extends Phaser.Scene{
     }
 
     private _createLayoutSwitchButton(): void{
+        
         this._layoutSwitchButton = this.add
-        .image(innerWidth - 10, innerHeight / 2, Configs.layoutSwitchButton.texture)
+        .image(innerWidth - 10, innerHeight / 2, Configs.layoutSwitchButton.texture + '-' + Configs.uiComponentsColor)
         .setDisplaySize(Configs.layoutSwitchButton.width, Configs.layoutSwitchButton.height)
         .setOrigin(Configs.layoutSwitchButton.origin.x, Configs.layoutSwitchButton.origin.y)
         .setInteractive({cursor: 'pointer'})
