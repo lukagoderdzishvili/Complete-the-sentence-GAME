@@ -9,8 +9,8 @@ A cloze activity where you drag and drop words into blank spaces within a text.
 
 
 ```bash    
-  git clone https://github.com/lukagoderdzishvili/Complete-the-sentence.git
-  cd Complete-the-sentence
+  git clone https://github.com/lukagoderdzishvili/Complete-the-sentence-GAME.git
+  cd Complete-the-sentence-GAME
   
   npm install 
   npm run start
