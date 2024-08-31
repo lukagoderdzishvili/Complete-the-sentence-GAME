@@ -24,5 +24,12 @@ npm run build
 
 ## DEMO
 ```bash
-https://complete-the-sentence.netlify.app
+[https://complete-the-sentence.netlify.app](https://complete-the-sentence.netlify.app)
+
+```
+
+## DOCUMENTATION - HOW TO USE
+```bash
+[DOCUMENTATION](https://github.com/lukagoderdzishvili/Complete-the-sentence-GAME/blob/main/GAME-DOCUMENTATION.pdf)
+
 ```
