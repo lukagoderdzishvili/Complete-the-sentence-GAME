@@ -20,3 +20,9 @@ A cloze activity where you drag and drop words into blank spaces within a text.
 ```bash
 npm run build
 ```
+
+
+## DEMO
+```bash
+https://complete-the-sentence.netlify.app
+```
